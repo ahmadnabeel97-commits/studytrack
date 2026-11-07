@@ -214,12 +214,26 @@ button{cursor:pointer}button:hover{filter:brightness(1.06)}
 @media(min-width:900px){.tile .xdots{grid-column:2}#h-don0{display:none}}
 </style>
 <script>
-/* STEP 4: paste your Firebase web app settings between the quotes */
-window.FB_CONFIG={apiKey:'AIzaSyBr9zyRp1KB346PBEetfw0rLoAQRdCKw9c',authDomain:'study-tracker-e09c4.firebaseapp.com',projectId:'study-tracker-e09c4',appId:'1:912213886490:web:510e19a1c12b4b35b2b3a3'};
+window.FB_CONFIG={
+  apiKey:"AIzaSyBr9zyRp1KB346PBEetfw0rLoAQRdCKw9c",
+  authDomain:"study-tracker-e09c4.firebaseapp.com",
+  projectId:"study-tracker-e09c4",
+  storageBucket:"study-tracker-e09c4.firebasestorage.app",
+  messagingSenderId:"912213886490",
+  appId:"1:912213886490:web:510e19a1c12b4b35b2b3a3",
+  measurementId:"G-4854EK97N0"
+};
 </script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#4f3fd6">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="StudyTrack">
 </head>
 <body>
 <main>
@@ -1169,6 +1183,18 @@ $('#b-rest').onclick=function(){
   catch(x){$('#b-msg').style.color='var(--bad)';$('#b-msg').textContent='That backup text isn’t valid. Paste the full text you copied.'}
 };
 render();
+</script>
+<script>
+if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+var instEv=null;
+window.addEventListener('beforeinstallprompt',function(e){
+  e.preventDefault();instEv=e;
+  if(document.getElementById('inst-btn'))return;
+  var b=document.createElement('button');b.id='inst-btn';b.className='ghost';b.textContent='Install StudyTrack as an app';b.style.cssText='width:100%;margin-bottom:6px';
+  b.onclick=function(){instEv.prompt();instEv.userChoice.then(function(){b.remove();instEv=null})};
+  var sec=document.getElementById('v-subj');sec.insertBefore(b,sec.firstChild);
+});
+window.addEventListener('appinstalled',function(){var b=document.getElementById('inst-btn');if(b)b.remove()});
 </script>
 </body>
 </html>
