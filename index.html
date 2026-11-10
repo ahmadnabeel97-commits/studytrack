@@ -920,6 +920,54 @@ nav button[aria-current=true]{background:var(--c3)!important;color:var(--accent)
 .toast.tt-undo button{background:transparent;color:inherit;border:0;box-shadow:none;min-height:0;padding:2px 6px;font-weight:800;text-decoration:underline;cursor:pointer}
 @keyframes ttUp{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
 @media (prefers-reduced-motion:reduce){.tt-swipe,.tt-fg,.tt-title,.tt-bg,.tt-bg span{transition-duration:.01s!important}.tt-undo:not([hidden]){animation:none}}
+
+/* Syllabus manager: donut + paged subject list, one expanded subject, colour per subject and unit */
+.syx-top{padding:16px}
+.syx-note{font-size:11px;color:var(--mute);line-height:1.5}
+.syx-layout{display:grid;grid-template-columns:minmax(120px,.8fr) minmax(0,1.2fr);gap:8px;align-items:center}
+@media(min-width:481px){.syx-layout{grid-template-columns:minmax(150px,.85fr) minmax(0,1.15fr);gap:12px}}
+#syx-donut{width:100%;max-width:220px;display:block;margin:auto}
+.syx-seg{cursor:pointer;transition:stroke-width .2s ease}
+.syx-legend{min-width:0}
+.syx-row{display:block;width:100%;min-height:0;padding:7px 8px;margin:0;background:transparent;color:var(--ink);text-align:left;font-weight:inherit;border:0;border-bottom:1px solid var(--line);border-radius:0}
+.syx-row:last-child{border-bottom-color:transparent}
+.syx-row.on{background:color-mix(in srgb,var(--sc) 14%,var(--surface));border-radius:12px;border-bottom-color:transparent;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--sc) 50%,transparent)}
+.syx-rt{display:flex;align-items:center;gap:7px;font-size:12px}
+.syx-rt>i{width:10px;height:10px;border-radius:50%;flex:none;background:var(--sc)}
+.syx-rt>b{flex:1;min-width:0;font-weight:700;line-height:1.25;overflow-wrap:anywhere}
+.syx-p{flex:none;font-weight:800;font-size:12px}
+.syx-b{display:flex;align-items:center;gap:6px;margin-top:5px}
+.syx-b>span{flex:1;height:5px;background:color-mix(in srgb,var(--sc) 16%,var(--line));border-radius:99px;overflow:hidden}
+.syx-b>span>i{display:block;height:100%;border-radius:99px;background:var(--sc)}
+.syx-b small{flex:none;font-size:10px;color:var(--mute)}
+.syx-arch{padding:6px 8px}
+.syx-panel{--bc:var(--sc);background:linear-gradient(180deg,color-mix(in srgb,var(--sc) 13%,var(--surface)),var(--surface) 150px);border:1px solid color-mix(in srgb,var(--sc) 32%,var(--line))!important}
+.syx-ph{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.syx-sd{width:12px;height:34px;border-radius:99px;background:var(--sc);flex:none}
+.syx-pt{flex:1;min-width:0}.syx-pt b{display:block;font-size:16px;font-weight:800;overflow-wrap:anywhere}.syx-pt small{display:block;color:var(--mute);font-size:12px}
+.syx-pp{font-size:18px;font-weight:800;color:color-mix(in srgb,var(--sc) 75%,var(--ink))}
+.syx-bar{height:8px;border-radius:99px;overflow:hidden;background:color-mix(in srgb,var(--bc) 16%,var(--line))}
+.syx-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--bc),color-mix(in srgb,var(--bc) 65%,#fff))}
+.syx-more{min-height:30px;width:34px;padding:0;border-radius:10px;font-size:18px;line-height:1;flex:none}
+.syx-menu{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px;padding:8px;border-radius:12px;background:var(--bg)}
+.syx-unit{--bc:var(--uc);margin-top:10px;padding:10px 12px;border-radius:16px;background:color-mix(in srgb,var(--uc) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--uc) 28%,var(--line));border-left:5px solid var(--uc)}
+.syx-uh{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.syx-uhit{flex:1;min-width:0;min-height:36px;display:flex;align-items:center;gap:8px;padding:0;background:transparent;color:var(--ink);text-align:left;font-weight:inherit;border-radius:8px}
+.syx-chev{flex:none;width:20px;text-align:center;color:var(--uc)}
+.syx-ut{min-width:0}.syx-ut b{display:block;font-size:14px;overflow-wrap:anywhere}.syx-ut small{display:block;color:var(--mute);font-size:11.5px}
+.syx-up{flex:none;font-size:13px;color:color-mix(in srgb,var(--uc) 70%,var(--ink))}
+.syx-ub{margin-top:6px}
+.syx-topic{padding:8px 0;border-top:1px dashed color-mix(in srgb,var(--uc) 30%,var(--line))}
+.syx-ub>.syx-topic:first-child{border-top:0}
+.syx-unit .ck input{border-color:color-mix(in srgb,var(--uc) 65%,var(--surface))}
+.syx-unit .ck input:checked{background:var(--uc);border-color:var(--uc)}
+.syx-unit .ck em{color:color-mix(in srgb,var(--uc) 70%,var(--ink))}
+.syx-ta{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0 0 30px}
+.syx-ta button.ghost:not(.syx-more){min-height:28px;padding:3px 9px;font-size:11.5px}
+.syx-unit .topic-task-panel{margin-top:6px}
+.syx-empty{color:var(--mute);font-size:13px;padding:10px 0}
+.syx-addunit{margin-top:12px}
+.syx-add .ch{margin-bottom:8px}
 </style>
 <script>
 window.FB_CONFIG={
@@ -1028,8 +1076,8 @@ window.FB_CONFIG={
 </section>
 
 <section id="v-tasks" hidden>
-  <div class="seg" id="tk-seg"><button class="ghost" data-tk="tasks" aria-pressed="true">Tasks</button><button class="ghost" data-tk="syl" aria-pressed="false">Syllabus</button></div>
-  <div id="tk-tasks">
+  <div class="seg" id="tk-seg"><button class="ghost" data-tk="syl" aria-pressed="true">Syllabus</button><button class="ghost" data-tk="tasks" aria-pressed="false">Tasks</button></div>
+  <div id="tk-tasks" hidden>
     <div class="card">
       <div class="row tk-add-row" style="flex-wrap:nowrap"><input id="t-text" type="text" placeholder="Add a task" autocomplete="off" aria-label="Task title"><button id="t-add" style="flex:0 0 auto">Add</button></div>
       <div id="t-parse" class="tparse" hidden></div>
@@ -1047,7 +1095,7 @@ window.FB_CONFIG={
     <div class="tk-bulk" id="tk-bulk" hidden><b id="tk-selected-count">0 selected</b><button id="tk-bulk-done">Complete</button><button class="ghost" id="tk-bulk-todo">Mark to do</button><button class="ghost" id="tk-bulk-delete">Delete</button><button class="ghost" id="tk-bulk-clear">Clear</button></div>
     <div class="card" id="tk-list"></div>
   </div>
-  <div id="tk-syl" hidden><div id="syl"></div></div>
+  <div id="tk-syl"><div id="syl"></div></div>
 </section>
 
 <section id="v-exams" hidden>
@@ -1468,8 +1516,8 @@ $('#c-tasks').addEventListener('click',function(e){
   var done=e.target.closest('[data-cal-task]');
   if(done){var k=S.tasks.find(function(x){return x.id===done.dataset.calTask});if(k){dmSetStatus(k,k.status==='completed'?'todo':'completed',Date.now());save();render();}return}
   var edit=e.target.closest('[data-cal-edit]');
-  if(edit){var k2=S.tasks.find(function(x){return x.id===edit.dataset.calEdit});if(k2){show('tasks');tkEdit=k2.id;tkDraft={title:k2.title,subj:k2.subjectId||'',topic:k2.topicId||'',due:k2.dueDate||'',dueTime:k2.dueTime||'',prio:k2.priority||'',status:k2.status};tkDelId=null;renderTasks();}return}
-  if(e.target.closest('#c-add-task')){$('#t-due').value=cSel;show('tasks');$('#t-text').focus();toast('Add a task for '+niceDate(cSel)+'.')}
+  if(edit){var k2=S.tasks.find(function(x){return x.id===edit.dataset.calEdit});if(k2){show('tasks');tkSub('tasks');tkEdit=k2.id;tkDraft={title:k2.title,subj:k2.subjectId||'',topic:k2.topicId||'',due:k2.dueDate||'',dueTime:k2.dueTime||'',prio:k2.priority||'',status:k2.status};tkDelId=null;renderTasks();}return}
+  if(e.target.closest('#c-add-task')){$('#t-due').value=cSel;show('tasks');tkSub('tasks');$('#t-text').focus();toast('Add a task for '+niceDate(cSel)+'.')}
 });
 $('#c-tl').onclick=function(e){
   if(Date.now()-pinchAt<500)return;
@@ -2388,39 +2436,155 @@ function loadSyl(){
   save();render();
 }
 function sbtn(k,v){return'<div class="sb">'+[['a','Started'],['b','Studied'],['c','Need revision'],['d','Revised']].map(function(x){return'<button class="q'+x[0]+(v===x[0]?' on':'')+'" data-kk="'+k+'" data-st="'+x[0]+'">'+x[1]+'</button>'}).join('')+'</div>'}
+var sylMenu=null,sylPage=0,sylTouched=false,sylJump=false,SYX_PER=6,SYX_OFF=[0,40,-40,80,-80,120,-120,160,-160];
+function sylHsl(c){
+  var m=/^hsl\(\s*([\d.]+)\s*,\s*([\d.]+)%\s*,\s*([\d.]+)%\s*\)$/.exec(c);
+  if(m)return[+m[1],+m[2],+m[3]];
+  m=/^#([0-9a-f]{6})$/i.exec(c);if(!m)return[260,55,55];
+  var r=parseInt(m[1].slice(0,2),16)/255,g=parseInt(m[1].slice(2,4),16)/255,b=parseInt(m[1].slice(4,6),16)/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2,h=0,s=0,d=mx-mn;
+  if(d){s=l>.5?d/(2-mx-mn):d/(mx+mn);h=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4;h*=60}
+  return[h,s*100,l*100];
+}
+function sylUnitColor(base,i){
+  var a=sylHsl(base),off=SYX_OFF[i%SYX_OFF.length],lap=Math.floor(i/SYX_OFF.length);
+  var h=((a[0]+off)%360+360)%360,s=Math.max(55,Math.min(80,a[1])),l=Math.max(46,Math.min(60,a[2]+lap*6));
+  return'hsl('+Math.round(h)+','+Math.round(s)+'%,'+Math.round(l)+'%)';
+}
+/* Same ranking as the Analytics "Syllabus by subject" card, so a subject keeps one colour everywhere. */
+function sylModel(){
+  var activeTopics=S.topics.filter(function(t){return!t.deleted&&!t.archivedAt&&S.units.some(function(u){return u.id===t.unitId&&!u.deleted&&!u.archivedAt})});
+  var withT=[],noT=[];
+  S.subjects.filter(function(x){return!x.archivedAt&&!x.deleted}).forEach(function(sb){
+    var ts=activeTopics.filter(function(t){var u=S.units.find(function(x){return x.id===t.unitId});return u&&u.subjectId===sb.id});
+    var done=ts.filter(function(t){return dmTopicProg(S,t)>=100}).length;
+    (ts.length?withT:noT).push({sb:sb,count:ts.length,done:done,p:ts.length?Math.round(done/ts.length*100):0});
+  });
+  withT.sort(function(a,b){return b.count-a.count});
+  var rows=withT.concat(noT);
+  rows.forEach(function(r,i){r.color=sylColor(i)});
+  return rows;
+}
 function renderSyl(){
   var el=$('#syl');if(!el)return;
   if(!S.units||!S.units.length){el.innerHTML='<div class="card"><div class="ch"><b>BCS Preliminary syllabus</b></div><p style="margin:0 0 10px;color:var(--mute);font-size:13px">Load the existing BCS syllabus, or create your own subjects and syllabus structure.</p><button class="full" id="syl-load">Load existing BCS syllabus</button><div class="row" style="margin-top:10px"><input id="sm-new-subject" placeholder="New subject name"><button data-sm="add-subject">Add</button></div></div>';return}
   tmn={};S.logs.forEach(function(l){if(l.tp)tmn[l.tp]=(tmn[l.tp]||0)+l.min});
-  var activeSubjects=S.subjects.filter(function(x){return!x.archivedAt&&!x.deleted}),archivedSubjects=S.subjects.filter(function(x){return!!(x.archivedAt||x.deleted)}),total=0,done=0,h='';
-  function btn(action,id,label,cls){return'<button class="ghost" style="min-height:30px;padding:4px 8px;font-size:11px" data-sm="'+action+'" data-id="'+id+'"'+(cls?' class="ghost '+cls+'"':'')+'>'+label+'</button>'}
-  function progress(p){return'<div class="bar"><i style="width:'+Math.round(p||0)+'%"></i></div>'}
-  function subjectCard(sb,isArchived){
-    var us=S.units.filter(function(u){return u.subjectId===sb.id&&!!(u.archivedAt||u.deleted)===isArchived}).sort(function(a,b){return(a.order||0)-(b.order||0)}),sn=0,sd=0,unitHtml='';
+  var rows=sylModel(),archivedSubjects=S.subjects.filter(function(x){return!!(x.archivedAt||x.deleted)}),h='',i;
+  if(!sylTouched&&sylOpen===-1&&rows.length)sylOpen=rows[0].sb.id;
+  var totalT=rows.reduce(function(a,r){return a+r.count},0),doneT=rows.reduce(function(a,r){return a+r.done},0);
+  function btn(action,id,label){return'<button class="ghost" style="min-height:30px;padding:4px 10px;font-size:12px" data-sm="'+action+'" data-id="'+id+'">'+label+'</button>'}
+  function more(id){return'<button type="button" class="ghost syx-more" data-sm="menu" data-id="'+id+'" aria-label="More actions" aria-expanded="'+(sylMenu===id?'true':'false')+'">\u22ef</button>'}
+  function menuRow(id,inner){return sylMenu===id?'<div class="syx-menu">'+inner+'</div>':''}
+  function bar(p){return'<div class="syx-bar"><i style="width:'+Math.round(p||0)+'%"></i></div>'}
+  function panel(sb,isArchived,color,stat){
+    var us=S.units.filter(function(u){return u.subjectId===sb.id&&!!(u.archivedAt||u.deleted)===isArchived}).sort(function(a,b){return(a.order||0)-(b.order||0)}),unitHtml='';
     us.forEach(function(u,ui){
       var ts=S.topics.filter(function(t){return t.unitId===u.id&&!!(t.archivedAt||t.deleted)===isArchived}).sort(function(a,b){return(a.order||0)-(b.order||0)}),td=0,tpSum=0;
-      ts.forEach(function(t){var pr=dmTopicProg(S,t);tpSum+=pr;if(pr>=100)td++;if(!isArchived){sn++;if(pr>=100)sd++;total++;if(pr>=100)done++}});
-      var up=ts.length?Math.round(tpSum/ts.length):0,unitOpen=sylUnitOpen[u.id]!==false;
-      var topicHtml=ts.map(function(t,ti){
+      ts.forEach(function(t){var pr=dmTopicProg(S,t);tpSum+=pr;if(pr>=100)td++});
+      var up=ts.length?Math.round(tpSum/ts.length):0,unitOpen=sylUnitOpen[u.id]===true,uc=sylUnitColor(color,ui);
+      var topicHtml=ts.map(function(t){
         var pr=dmTopicProg(S,t),topicTasks=S.tasks.filter(function(k){return k.topicId===t.id&&!k.deleted}),taskCount=topicTasks.length,expanded=!!sylTopicTasksOpen[t.id];
         var taskRows=topicTasks.length?topicTasks.map(function(k){var isDone=k.status==='completed';return '<div class="tt-swipe" data-id="'+k.id+'"><div class="tt-bg tt-bgd" aria-hidden="true"><span>'+(isDone?'↺ To do':'✓ Done')+'</span></div><div class="tt-bg tt-bgx" aria-hidden="true"><span>Delete</span></div><div class="tt-fg" tabindex="0" role="button" data-sm="topic-task-edit" data-id="'+k.id+'" aria-label="'+esc(k.title)+(isDone?' (done)':'')+'"><span class="tt-title'+(isDone?' done':'')+'">'+esc(k.title)+'</span></div></div>'}).join(''):'<small style="color:var(--mute)">No tasks linked to this topic yet.</small>';
         var taskPanel=expanded?'<div class="topic-task-panel">'+taskRows+(topicTasks.length?'<div class="tt-hint">Swipe right to complete · left to delete</div>':'')+(!isArchived?'<div class="topic-task-add"><input data-sm-input="topic-task" data-parent="'+t.id+'" placeholder="Add a task to this topic"><button data-sm="add-topic-task" data-id="'+t.id+'">Add</button></div><div class="tparse" data-sm-parse="'+t.id+'" hidden></div>':'')+'</div>':'';
-        return '<div class="rw sub" style="padding:7px 0;border-top:1px solid var(--line);align-items:center;flex-wrap:wrap"><label class="ck" style="flex:1;min-width:120px"><input type="checkbox" data-k="'+t.id+'"'+(pr>=100?' checked':'')+'><span>'+esc(t.title)+' <em>'+Math.round(pr)+'%</em></span></label><button class="ghost topic-task-toggle" data-sm="toggle-topic-tasks" data-id="'+t.id+'">'+taskCount+' task'+(taskCount===1?'':'s')+' · '+(expanded?'Hide':'View')+'</button>'+(!isArchived?'<button class="ghost" data-sm="task" data-id="'+t.id+'" title="Create task" style="min-height:28px;padding:3px 7px">+ Task</button>':'')+btn('edit-topic',t.id,'Edit')+(!isArchived?btn('up-topic',t.id,'↑')+btn('down-topic',t.id,'↓')+btn('archive-topic',t.id,'Archive'):btn('restore-topic',t.id,'Restore'))+taskPanel+'</div>';
+        var tm=!isArchived?btn('edit-topic',t.id,'Edit')+btn('up-topic',t.id,'↑ Move up')+btn('down-topic',t.id,'↓ Move down')+btn('archive-topic',t.id,'Archive'):btn('edit-topic',t.id,'Edit')+btn('restore-topic',t.id,'Restore');
+        return '<div class="syx-topic"><label class="ck"><input type="checkbox" data-k="'+t.id+'"'+(pr>=100?' checked':'')+'><span>'+esc(t.title)+' <em>'+Math.round(pr)+'%</em></span></label><div class="syx-ta"><button class="ghost topic-task-toggle" data-sm="toggle-topic-tasks" data-id="'+t.id+'">'+taskCount+' task'+(taskCount===1?'':'s')+' · '+(expanded?'Hide':'View')+'</button>'+(!isArchived?'<button class="ghost" data-sm="task" data-id="'+t.id+'" title="Create task">+ Task</button>':'')+more(t.id)+'</div>'+menuRow(t.id,tm)+taskPanel+'</div>';
       }).join('');
-      unitHtml+='<div class="tp" style="padding:8px 0"><div class="rw" style="align-items:center"><button class="ghost" data-sm="unit-toggle" data-id="'+u.id+'" style="padding:4px 7px;min-height:30px">'+(unitOpen?'▾':'▸')+'</button><div style="flex:1;min-width:100px"><b style="font-size:13px">'+esc(u.title)+'</b><small style="display:block;color:var(--mute)">'+td+'/'+ts.length+' topics · '+up+'%</small></div><span style="font-size:11px;color:var(--mute)">'+(u.marks?esc(u.marks)+' marks':'')+'</span>'+btn('edit-unit',u.id,'Edit')+(!isArchived?btn('up-unit',u.id,'↑')+btn('down-unit',u.id,'↓')+btn('archive-unit',u.id,'Archive'):btn('restore-unit',u.id,'Restore'))+'</div>'+progress(up)+(unitOpen?'<div style="padding-left:12px">'+topicHtml+(!isArchived?'<div class="row" style="margin-top:7px"><input data-sm-input="topic" data-parent="'+u.id+'" placeholder="Add a topic"><button data-sm="add-topic" data-id="'+u.id+'">Add topic</button></div>':'')+'</div>':'')+'</div>';
+      var um=!isArchived?btn('edit-unit',u.id,'Edit')+btn('up-unit',u.id,'↑ Move up')+btn('down-unit',u.id,'↓ Move down')+btn('archive-unit',u.id,'Archive'):btn('edit-unit',u.id,'Edit')+btn('restore-unit',u.id,'Restore');
+      unitHtml+='<div class="syx-unit" style="--uc:'+uc+'"><div class="syx-uh"><button type="button" class="syx-uhit" data-sm="unit-toggle" data-id="'+u.id+'" aria-expanded="'+(unitOpen?'true':'false')+'"><span class="syx-chev">'+(unitOpen?'▾':'▸')+'</span><span class="syx-ut"><b>'+esc(u.title)+'</b><small>'+td+'/'+ts.length+' topics'+(u.marks?' · '+esc(u.marks)+' marks':'')+'</small></span></button><b class="syx-up">'+up+'%</b>'+more(u.id)+'</div>'+bar(up)+menuRow(u.id,um)+(unitOpen?'<div class="syx-ub">'+topicHtml+(!isArchived?'<div class="row" style="margin-top:8px"><input data-sm-input="topic" data-parent="'+u.id+'" placeholder="Add a topic"><button data-sm="add-topic" data-id="'+u.id+'">Add topic</button></div>':'')+'</div>':'')+'</div>';
     });
-    var pc=sn?Math.round(S.units.filter(function(u){return u.subjectId===sb.id&&!u.archivedAt&&!u.deleted}).reduce(function(a,u){return a+(dmUnitProg(S,u)||0);},0)/Math.max(1,S.units.filter(function(u){return u.subjectId===sb.id&&!u.archivedAt&&!u.deleted&&dmUnitProg(S,u)!==null}).length)):0;
-    return '<div class="card sy" style="padding:12px"><div class="sh" data-s="'+sb.id+'" style="cursor:pointer"><div class="t"><b>'+esc(sb.alt||sb.name)+'</b><small>'+esc(sb.alt?sb.name+' · ':'')+(sb.marks?sb.marks+' marks · ':'')+us.length+' units</small></div><b>'+pc+'%</b></div>'+progress(pc)+'<div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0">'+btn('edit-subject',sb.id,'Edit name')+(isArchived?btn('restore-subject',sb.id,'Restore'):btn('archive-subject',sb.id,'Archive'))+'</div>'+(sylOpen===sb.id?unitHtml+(!isArchived?'<div class="row" style="margin-top:8px"><input data-sm-input="unit" data-parent="'+sb.id+'" placeholder="Add a syllabus unit"><button data-sm="add-unit" data-id="'+sb.id+'">Add unit</button></div>':''):'<small style="color:var(--mute)">Tap to '+(sylOpen===sb.id?'collapse':'manage units and topics')+'</small>')+'</div>';
+    var sm=isArchived?btn('edit-subject',sb.id,'Edit name')+btn('restore-subject',sb.id,'Restore'):btn('edit-subject',sb.id,'Edit name')+btn('archive-subject',sb.id,'Archive');
+    return '<div class="card syx-panel" style="--sc:'+color+'"><div class="syx-ph"><span class="syx-sd"></span><div class="syx-pt"><b>'+esc(sb.alt||sb.name)+'</b><small>'+esc(sb.alt?sb.name+' · ':'')+(sb.marks?sb.marks+' marks · ':'')+us.length+' unit'+(us.length===1?'':'s')+(stat?' · '+stat.done+'/'+stat.count+' topics':'')+'</small></div><b class="syx-pp">'+(stat?stat.p:0)+'%</b>'+more(sb.id)+'</div>'+bar(stat?stat.p:0)+menuRow(sb.id,sm)+(unitHtml||'<div class="syx-empty">No units yet. Add the first one below.</div>')+(!isArchived?'<div class="row syx-addunit"><input data-sm-input="unit" data-parent="'+sb.id+'" placeholder="Add a syllabus unit"><button data-sm="add-unit" data-id="'+sb.id+'">Add unit</button></div>':'')+'</div>';
   }
-  h+='<div class="card"><div class="ch"><b>Syllabus manager</b><b>'+Math.round(total?done/total*100:0)+'%</b></div>'+progress(total?done/total*100:0)+'<small style="color:var(--mute)">'+done+' of '+total+' active topics completed. Progress is based on linked tasks, with your manual completion override retained.</small><div class="row" style="margin-top:10px"><input id="sm-new-subject" placeholder="Add a subject"><button data-sm="add-subject">Add subject</button></div><button class="ghost" data-sm="toggle-archived" style="width:100%;margin-top:8px">'+(showArchivedSyl?'Hide':'Show')+' archived records ('+archivedSubjects.length+')</button></div>';
-  activeSubjects.forEach(function(sb){h+=subjectCard(sb,false)});
-  if(showArchivedSyl){if(archivedSubjects.length)archivedSubjects.forEach(function(sb){h+=subjectCard(sb,true)});else h+='<div class="card"><small style="color:var(--mute)">No archived subjects.</small></div>';
+  /* Top card: donut + paged subject list */
+  var C=2*Math.PI*68,off=0,g='<circle cx="100" cy="100" r="68" fill="none" stroke-width="34" style="stroke:var(--line)"/>',gap=rows.filter(function(r){return r.count}).length>1?1.6:0;
+  rows.forEach(function(r){if(!r.count)return;var len=Math.max(0,r.count/totalT*C-gap),sel=r.sb.id===sylOpen;g+='<circle class="syx-seg" data-s="'+r.sb.id+'" cx="100" cy="100" r="68" fill="none" stroke-width="'+(sel?42:34)+'" stroke="'+r.color+'" stroke-dasharray="'+len.toFixed(2)+' '+(C-len).toFixed(2)+'" stroke-dashoffset="'+(-off).toFixed(2)+'" transform="rotate(-90 100 100)"><title>'+esc(r.sb.alt||r.sb.name)+'</title></circle>';off+=r.count/totalT*C});
+  g+='<text x="100" y="96" text-anchor="middle" font-size="19" font-weight="800" style="fill:var(--ink)">'+(totalT?Math.round(doneT/totalT*100)+'%':'—')+'</text><text x="100" y="112" text-anchor="middle" font-size="9" style="fill:var(--mute)">Completed</text>';
+  var pages=Math.max(1,Math.ceil(rows.length/SYX_PER)),pg='',dots='';
+  for(i=0;i<pages;i++){
+    pg+='<div class="syr-page">'+rows.slice(i*SYX_PER,(i+1)*SYX_PER).map(function(r){var nm=r.sb.alt||r.sb.name,sel=r.sb.id===sylOpen;return'<button type="button" class="syx-row'+(sel?' on':'')+'" data-s="'+r.sb.id+'" style="--sc:'+r.color+'" aria-pressed="'+(sel?'true':'false')+'"><span class="syx-rt"><i></i><b>'+esc(nm)+'</b><span class="syx-p">'+r.p+'%</span></span><span class="syx-b"><span><i style="width:'+r.p+'%"></i></span><small>'+r.done+'/'+r.count+'</small></span></button>'}).join('')+'</div>';
+    dots+='<i data-sxp="'+i+'"></i>';
+  }
+  if(sylPage>pages-1)sylPage=pages-1;if(sylPage<0)sylPage=0;
+  h+='<div class="card syx-top"><div class="ch"><b>Syllabus manager</b><span class="syx-note">'+doneT+' of '+totalT+' topics completed</span></div>'+(rows.length?'<div class="syx-layout"><svg id="syx-donut" viewBox="0 0 200 200" role="img" aria-label="Syllabus topics by subject">'+g+'</svg><div class="syx-legend"><div class="syr-track" id="syx-track">'+pg+'</div>'+(pages>1?'<div class="syr-nav"><button type="button" class="ghost" data-sxp="prev" aria-label="Previous subjects">\u2039</button><div class="xdots" id="syx-dots">'+dots+'</div><button type="button" class="ghost" data-sxp="next" aria-label="Next subjects">\u203a</button></div>':'')+'</div></div><div class="syx-note" style="margin-top:8px">Progress is based on linked tasks, with your manual completion override retained. Tap a subject to open it.</div>':'<div class="empty">No active subjects yet. Add one below.</div>')+'</div>';
+  /* Only the chosen subject is expanded */
+  var open=rows.filter(function(r){return r.sb.id===sylOpen})[0];
+  if(open)h+=panel(open.sb,false,open.color,open);
+  /* Bottom: add subject + archived records */
+  h+='<div class="card syx-add"><div class="ch"><b>Add a subject</b></div><div class="row"><input id="sm-new-subject" placeholder="Add a subject"><button data-sm="add-subject">Add subject</button></div><button class="ghost" data-sm="toggle-archived" style="width:100%;margin-top:8px">'+(showArchivedSyl?'Hide':'Show')+' archived records ('+archivedSubjects.length+')</button></div>';
+  if(showArchivedSyl){
+    if(archivedSubjects.length)archivedSubjects.forEach(function(sb){
+      var isOpen=sylOpen===sb.id;
+      h+=isOpen?panel(sb,true,'#8a90b5',null):'<div class="card syx-arch" style="--sc:#8a90b5"><button type="button" class="syx-row" data-s="'+sb.id+'"><span class="syx-rt"><i></i><b>'+esc(sb.alt||sb.name)+'</b><span class="syx-p">Archived</span></span></button></div>';
+    });else h+='<div class="card"><small style="color:var(--mute)">No archived subjects.</small></div>';
     var archivedUnits=S.units.filter(function(u){return(u.archivedAt||u.deleted)&&!archivedSubjects.some(function(sb){return sb.id===u.subjectId})});
     var archivedTopics=S.topics.filter(function(t){return(t.archivedAt||t.deleted)&&!S.units.some(function(u){return u.id===t.unitId&&(u.archivedAt||u.deleted)})});
     if(archivedUnits.length||archivedTopics.length)h+='<div class="card"><b>Other archived items</b>'+archivedUnits.map(function(u){return'<div class="rw" style="padding:7px 0"><span style="flex:1">'+esc(u.title)+'</span>'+btn('restore-unit',u.id,'Restore')+'</div>'}).join('')+archivedTopics.map(function(t){return'<div class="rw" style="padding:7px 0"><span style="flex:1">'+esc(t.title)+'</span>'+btn('restore-topic',t.id,'Restore')+'</div>'}).join('')+'</div>';
   }
   el.innerHTML=h;
+  sylUiSave();
+  var tr=$('#syx-track');
+  if(tr){
+    if(sylJump){var ix=rows.findIndex(function(r){return r.sb.id===sylOpen});if(ix>=0)sylPage=Math.floor(ix/SYX_PER);sylJump=false}
+    tr.scrollLeft=sylPage*(tr.clientWidth||0);syxMark();
+    tr.addEventListener('scroll',function(){var p=Math.round(this.scrollLeft/(this.clientWidth||1));if(this.clientWidth&&p!==sylPage){sylPage=p;syxMark()}});
+  }
 }
+function syxMark(){
+  var tr=$('#syx-track'),n=tr?tr.children.length:0;
+  document.querySelectorAll('#syx-dots i').forEach(function(d,j){d.className=j===sylPage?'on':''});
+  var pv=document.querySelector('#syl [data-sxp="prev"]'),nx=document.querySelector('#syl [data-sxp="next"]');
+  if(pv)pv.disabled=sylPage<=0;if(nx)nx.disabled=sylPage>=n-1;
+}
+$('#syl').addEventListener('click',function(e){
+  var b=e.target.closest('[data-sxp]'),tr=$('#syx-track');if(!b||!tr)return;
+  var k=b.dataset.sxp,p=k==='prev'?sylPage-1:k==='next'?sylPage+1:parseInt(k,10);
+  p=Math.max(0,Math.min(tr.children.length-1,p));sylPage=p;
+  tr.scrollTo({left:p*tr.clientWidth,behavior:'smooth'});syxMark();
+});
+if(window.ResizeObserver)new ResizeObserver(function(){var tr=$('#syx-track');if(tr&&tr.clientWidth&&Math.abs(tr.scrollLeft-sylPage*tr.clientWidth)>1)tr.scrollLeft=sylPage*tr.clientWidth}).observe($('#syl'));
+function sylCollapse(sid){S.units.forEach(function(u){if(u.subjectId===sid){delete sylUnitOpen[u.id];S.topics.forEach(function(t){if(t.unitId===u.id)delete sylTopicTasksOpen[t.id]})}})}
+function tkSub(m){$('#tk-tasks').hidden=m!=='tasks';$('#tk-syl').hidden=m!=='syl';document.querySelectorAll('[data-tk]').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.tk===m?'true':'false')})}
+/* Remember where you left the Syllabus (device-only, own key; not part of your study data or Firestore sync). */
+var SYL_UI_KEY='bcs-syl-ui',sylScrollY=0;
+function sylOnView(){var v=$('#v-tasks');return!!v&&!v.hidden&&!$('#tk-syl').hidden}
+function sylUiSave(){
+  try{
+    var u=[],k=[],x;
+    for(x in sylUnitOpen)if(sylUnitOpen[x]===true)u.push(x);
+    for(x in sylTopicTasksOpen)if(sylTopicTasksOpen[x])k.push(x);
+    localStorage.setItem(SYL_UI_KEY,JSON.stringify({o:sylOpen,t:sylTouched?1:0,u:u,k:k,p:sylPage,tab:$('#tk-syl').hidden?'tasks':'syl',y:sylScrollY}));
+  }catch(e){}
+}
+function sylUiRestore(){
+  try{
+    var r=localStorage.getItem(SYL_UI_KEY);if(!r)return;
+    var d=JSON.parse(r);if(!d||typeof d!=='object')return;
+    var subj={},unit={},top={};
+    S.subjects.forEach(function(x){subj[x.id]=1});S.units.forEach(function(x){unit[x.id]=1});S.topics.forEach(function(x){top[x.id]=1});
+    if(d.o===-1||(typeof d.o==='string'&&subj[d.o])){sylOpen=d.o;sylTouched=!!d.t}
+    (Array.isArray(d.u)?d.u:[]).forEach(function(id){if(unit[id])sylUnitOpen[id]=true});
+    (Array.isArray(d.k)?d.k:[]).forEach(function(id){if(top[id])sylTopicTasksOpen[id]=true});
+    if(typeof d.p==='number'&&d.p>=0)sylPage=Math.floor(d.p);
+    if(typeof d.y==='number'&&d.y>=0)sylScrollY=d.y;
+    if(d.tab==='tasks')tkSub('tasks');
+  }catch(e){}
+}
+function sylRestoreScroll(){
+  if(!sylOnView()||sylScrollY<=0)return;
+  window.scrollTo(0,sylScrollY);
+  requestAnimationFrame(function(){window.scrollTo(0,sylScrollY)});
+}
+(function(){
+  var orig=show;
+  show=function(v){
+    if(v!=='tasks'&&sylOnView()){sylScrollY=Math.round(window.scrollY||0);sylUiSave()}
+    return orig.apply(this,arguments);
+  };
+  function leave(){if(sylOnView()){sylScrollY=Math.round(window.scrollY||0);sylUiSave()}}
+  window.addEventListener('pagehide',leave);
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')leave()});
+  $('#tk-seg').addEventListener('click',function(){sylUiSave()});
+})();
+sylUiRestore();
 function smArchiveSubject(sb,now){sb.archivedAt=now;sb.deleted=true;sb.updatedAt=now;var ids={};S.units.forEach(function(u){if(u.subjectId===sb.id&&!u.archivedAt){u.archivedAt=now;u.deleted=true;u.updatedAt=now;ids[u.id]=1}});S.topics.forEach(function(t){if(ids[t.unitId]&&!t.archivedAt){t.archivedAt=now;t.deleted=true;t.updatedAt=now}})}
 function smRestoreSubject(sb,now){var at=sb.archivedAt;sb.archivedAt=null;sb.deleted=false;sb.updatedAt=now;var ids={};S.units.forEach(function(u){if(u.subjectId===sb.id&&u.archivedAt===at){u.archivedAt=null;u.deleted=false;u.updatedAt=now;ids[u.id]=1}});S.topics.forEach(function(t){if(ids[t.unitId]&&t.archivedAt===at){t.archivedAt=null;t.deleted=false;t.updatedAt=now}})}
 function smArchiveUnit(u,now){u.archivedAt=now;u.deleted=true;u.updatedAt=now;S.topics.forEach(function(t){if(t.unitId===u.id&&!t.archivedAt){t.archivedAt=now;t.deleted=true;t.updatedAt=now}})}
@@ -2434,14 +2598,16 @@ $('#syl').addEventListener('click',function(e){
   if(t.id==='syl-load'){loadSyl();return}
   if(t.matches&&t.matches('input[type=checkbox]')){if(t.dataset.k){var x=S.topics.find(function(z){return z.id===t.dataset.k});if(x)dmTopicDone(x,t.checked,now);save();renderSyl()}return}
   if(action){var rec,inp;
+    if(action==='menu'){sylMenu=sylMenu===id?null:id;renderSyl();return}
+    sylMenu=null;
     if(action==='toggle-archived'){showArchivedSyl=!showArchivedSyl;renderSyl();return}
     if(action==='toggle-topic-tasks'){sylTopicTasksOpen[id]=!sylTopicTasksOpen[id];renderSyl();return}
     if(action==='add-topic-task'){rec=S.topics.find(function(x){return x.id===id});if(rec){inp=document.querySelector('[data-sm-input=\"topic-task\"][data-parent=\"'+id+'\"]');name=inp&&inp.value.trim();if(!name){toast('Enter a task title first.');return}var parentUnit=S.units.find(function(x){return x.id===rec.unitId});var pr=tkParse(name,{}),nt=dmMkTask({title:pr.title,subjectId:parentUnit?parentUnit.subjectId:null,unitId:rec.unitId,topicId:rec.id,dueDate:pr.date||null},now);if(pr.time&&nt.dueDate){nt.dueTime=pr.time;if(pr.dur){var sm0=+pr.time.slice(0,2)*60+ +pr.time.slice(3);S.plans.push({id:uid(),date:nt.dueDate,startMin:sm0,min:Math.max(1,Math.min(pr.dur,1440-sm0)),subj:nt.subjectId||null,note:nt.title,taskId:nt.id})}}S.tasks.push(nt);sylTopicTasksOpen[id]=true;save();render();return}}
     if(action==='topic-task-toggle'){rec=S.tasks.find(function(x){return x.id===id});if(rec){dmSetStatus(rec,rec.status==='completed'?'todo':'completed',now);save();render();return}}
     if(action==='topic-task-edit'){rec=S.tasks.find(function(x){return x.id===id});if(rec){show('tasks');$('#tk-tasks').hidden=false;$('#tk-syl').hidden=true;document.querySelectorAll('[data-tk]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.tk==='tasks'?'true':'false')});tkF.view='all';tkF.subj=rec.subjectId||'';tkF.topic=rec.topicId||'';tkEdit=rec.id;tkDraft={title:rec.title,subj:rec.subjectId||'',topic:rec.topicId||'',due:rec.dueDate||'',dueTime:rec.dueTime||'',prio:rec.priority||'',status:rec.status};renderTasks();return}}
-    if(action==='unit-toggle'){sylUnitOpen[id]=sylUnitOpen[id]===false?true:false;renderSyl();return}
-    if(action==='add-subject'){inp=$('#sm-new-subject');var name=inp&&inp.value.trim();if(!name)return;S.subjects.push({id:uid(),name:name,createdAt:now,updatedAt:now});save();render();return}
-    if(action==='add-unit'||action==='add-topic'){var field=t.dataset.id,parent=t.dataset.id;inp=document.querySelector('[data-sm-input="'+(action==='add-unit'?'unit':'topic')+'"][data-parent="'+parent+'"]');name=inp&&inp.value.trim();if(!name)return;if(action==='add-unit'){S.units.push({id:uid(),subjectId:parent,title:name,order:S.units.filter(function(u){return u.subjectId===parent}).length,createdAt:now,updatedAt:now});sylOpen=parent}else{S.topics.push({id:uid(),unitId:parent,title:name,order:S.topics.filter(function(x){return x.unitId===parent}).length,createdAt:now,updatedAt:now});sylUnitOpen[parent]=true}save();renderSyl();return}
+    if(action==='unit-toggle'){sylUnitOpen[id]=!sylUnitOpen[id];renderSyl();return}
+    if(action==='add-subject'){inp=$('#sm-new-subject');var name=inp&&inp.value.trim();if(!name)return;var nsId=uid();S.subjects.push({id:nsId,name:name,createdAt:now,updatedAt:now});sylOpen=nsId;sylTouched=true;sylJump=true;save();render();return}
+    if(action==='add-unit'||action==='add-topic'){var field=t.dataset.id,parent=t.dataset.id;inp=document.querySelector('[data-sm-input="'+(action==='add-unit'?'unit':'topic')+'"][data-parent="'+parent+'"]');name=inp&&inp.value.trim();if(!name)return;if(action==='add-unit'){var nuId=uid();sylUnitOpen[nuId]=true;S.units.push({id:nuId,subjectId:parent,title:name,order:S.units.filter(function(u){return u.subjectId===parent}).length,createdAt:now,updatedAt:now});sylOpen=parent}else{S.topics.push({id:uid(),unitId:parent,title:name,order:S.topics.filter(function(x){return x.unitId===parent}).length,createdAt:now,updatedAt:now});sylUnitOpen[parent]=true}save();renderSyl();return}
     if(action==='edit-subject'){rec=S.subjects.find(function(x){return x.id===id});if(rec){var v=prompt('Subject name',rec.name);if(v&&v.trim()){rec.name=v.trim();rec.updatedAt=now}}}
     if(action==='edit-unit'){rec=S.units.find(function(x){return x.id===id});if(rec){var v=prompt('Unit name',rec.title);if(v&&v.trim()){rec.title=v.trim();rec.updatedAt=now}}}
     if(action==='edit-topic'){rec=S.topics.find(function(x){return x.id===id});if(rec){var v=prompt('Topic name',rec.title);if(v&&v.trim()){rec.title=v.trim();rec.updatedAt=now}}}
@@ -2466,7 +2632,7 @@ $('#syl').addEventListener('click',function(e){
     }
     save();renderSyl();return;
   }
-  var sh=t.closest('[data-s]');if(sh){var sid=sh.dataset.s;sylOpen=sylOpen===sid?-1:sid;renderSyl()}
+  var sh=t.closest('[data-s]');if(sh){var sid=sh.dataset.s;sylOpen=sylOpen===sid?-1:sid;sylTouched=true;sylMenu=null;if(sylOpen!==-1)sylCollapse(sylOpen);renderSyl()}
 });
 var tmn={},sugSel={l:null,d:null};
 function sugSetup(inp,sel,key){
@@ -2756,6 +2922,39 @@ document.addEventListener('keydown',function(e){
     if(id==='t-subj'||id==='t-prio'||isSum||id==='t-add'){if(go(t,dir))e.preventDefault()}
   });
 })();
+/* Keyboard flow for the Log study time form (Home) and the Add study time popup (Calendar, Log time and Plan session).
+   Order: Topic or note -> Subject -> Hours -> Minutes -> Save. Right/Left arrows move along that order (in the topic box only at the very end of the text,
+   so typing is not disturbed). Up/Down keep working as they do: they move through topic suggestions and change the Subject. Enter on the Subject saves
+   (Enter in the topic box picks a highlighted suggestion first, then saves; Enter in Hours/Minutes saves, as before). */
+(function(){
+  function wire(box,ids){
+    var el=document.getElementById(box);if(!el)return;
+    function seq(){return ids.map(function(i){return document.getElementById(i)}).filter(function(x){return x&&!x.disabled&&x.offsetParent!==null})}
+    function go(from,dir){
+      var a=seq(),to=a[a.indexOf(from)+dir];if(!to)return false;
+      to.focus();
+      if(to.type==='text')to.setSelectionRange(to.value.length,to.value.length);
+      else if(to.type==='number')to.select();
+      return true;
+    }
+    el.addEventListener('keydown',function(e){
+      if(e.isComposing||e.shiftKey||e.ctrlKey||e.altKey||e.metaKey)return;
+      var t=e.target,id=t.id;if(ids.indexOf(id)<0)return;
+      if(e.key==='Enter'&&t.tagName==='SELECT'){
+        var b=document.getElementById(ids[ids.length-1]);
+        if(b&&!b.disabled){e.preventDefault();b.click()}
+        return;
+      }
+      if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;
+      var dir=e.key==='ArrowRight'?1:-1;
+      if(id===ids[0]){if(dir>0&&t.selectionStart===t.value.length&&t.selectionEnd===t.value.length&&go(t,1))e.preventDefault();return}
+      if(id===ids[ids.length-1]&&dir>0)return;
+      if(go(t,dir))e.preventDefault();
+    });
+  }
+  wire('logform',['l-n','l-subj','l-h','l-m','l-add']);
+  wire('dlg',['d-n','d-subj','d-h','d-m','d-save']);
+})();
 /* Keyboard flow for "Add a task to this topic" in the Syllabus: Enter adds (and the box is focused again for the next task),
    Right arrow at the end of the text moves to Add, Left arrow on Add goes back to the text. */
 document.addEventListener('keydown',function(e){
@@ -3031,7 +3230,7 @@ function show(v){
   document.querySelectorAll('nav button').forEach(function(b){b.setAttribute('aria-current',b.dataset.v===v?'true':'false')});
   var T={tasks:'Tasks',exams:'Exam deadlines',graph:'Analytics',subj:'Settings'};$('h1').hidden=!T[v];if(T[v])$('h1').textContent=T[v];$('main').style.padding=v==='cal'?'6px 12px 0':'';document.body.style.paddingBottom=v==='cal'?'0':'';window.scrollTo(0,0);if(v==='cal'){fitTl();scrollTl()}if(v==='log')fitHome();
 }
-document.querySelectorAll('nav button').forEach(function(b){b.onclick=function(){show(b.dataset.v)}});
+document.querySelectorAll('nav button').forEach(function(b){b.onclick=function(){show(b.dataset.v);if(b.dataset.v==='tasks')sylRestoreScroll()}});
 
 document.querySelectorAll('[data-q]').forEach(function(b){b.onclick=function(){var q=parseInt(b.dataset.q,10);$('#l-h').value=Math.floor(q/60)||'';$('#l-m').value=q%60||''}});
 $('#l-add').onclick=function(){
