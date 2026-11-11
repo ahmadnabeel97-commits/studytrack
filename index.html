@@ -968,6 +968,54 @@ nav button[aria-current=true]{background:var(--c3)!important;color:var(--accent)
 .syx-empty{color:var(--mute);font-size:13px;padding:10px 0}
 .syx-addunit{margin-top:12px}
 .syx-add .ch{margin-bottom:8px}
+/* Dawn banner: the sun rises from behind the hills as the Daily Goal fills (display only) */
+.top>.brand,.top>.gr,.top>p{position:relative;z-index:1}
+.dawn{--p:0;--rise:170px;position:absolute;inset:0;z-index:0;border-radius:inherit;overflow:hidden;pointer-events:none}
+.dawn.photo{--rise:250px}
+.dawn svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.dawn .dw-sun{transform:translateY(calc((1 - var(--p)) * var(--rise)));transition:transform 2.2s cubic-bezier(.22,.7,.2,1)}
+.dawn .dw-glow{opacity:calc(.12 + .88 * var(--p));transition:opacity 2.2s ease}
+.dawn .dw-stars{opacity:calc(.9 - .65 * var(--p));transition:opacity 2.2s ease}
+.dawn .dw-lit{position:absolute;inset:0;background:radial-gradient(ellipse 70% 90% at 78% 70%,rgba(255,214,150,.5),rgba(255,214,150,0) 70%);opacity:var(--p);transition:opacity 2.2s ease}
+.dawn .dw-dim{position:absolute;inset:0;background:#0b0930;opacity:calc(.6 * (1 - var(--p)));transition:opacity 2.2s ease}
+.dawn.photo .dw-dim{opacity:calc(.4 * (1 - var(--p)))}
+.dawn::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,12,60,.08),rgba(15,12,60,.5))}
+.dawn.photo::after,.dawn.photo .dw-sky,.dawn.photo .dw-stars,.dawn.photo .dw-back,.dawn.photo .dw-mid,.dawn.photo .dw-trees{display:none}
+.dawn.reset *{transition:none!important}
+.dawn.full .dw-glow{animation:dwPulse 4.5s ease-in-out infinite}
+@keyframes dwPulse{0%,100%{opacity:.86}50%{opacity:1}}
+/* Tasks tab: one search-or-add bar, tasks first */
+#v-tasks .tkbar{padding:8px}
+#v-tasks .tkbar .tk-add-row{flex-wrap:nowrap!important;gap:6px;align-items:stretch}
+#v-tasks .tkbar .tk-add-row input{flex:1 1 auto;min-width:0;min-height:40px}
+#v-tasks .tkbar .tk-add-row button{width:auto;flex:0 0 auto;min-width:64px;min-height:40px}
+.tkctl{display:none;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tkbar:focus-within .tkctl,.tkbar.has .tkctl{display:flex}
+.tkctl select,.tkctl input{width:auto;flex:1 1 96px;min-width:0;min-height:36px;padding:4px 8px;font-size:13px}
+.tkctl #t-dur{flex:0 1 74px}
+.tkflt{padding:8px}
+.tkfrow{display:flex;gap:6px;align-items:center}
+.tkfrow select{flex:1 1 0;width:auto;min-width:0;min-height:38px;padding:4px 8px;font-size:13px}
+.tkfrow button{flex:0 0 auto;min-height:38px;padding:4px 12px;font-size:13px}
+.tkmore summary{color:var(--mute);font-size:12.5px;cursor:pointer;margin-top:8px}
+.tkmore select{margin-top:8px}
+.tk-sum{margin:10px 2px 0;font-size:12.5px;color:var(--mute);text-align:center}
+.tq.hi{flex-wrap:wrap;outline:2px solid var(--accent);outline-offset:-2px;border-radius:12px;padding-left:8px;padding-right:8px}
+.tqb:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+.tksug{display:none;margin-top:6px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.tkbar:focus-within .tksug{display:block}
+.tksug[hidden]{display:none!important}
+.tksg{display:flex;flex-direction:column;gap:1px;padding:7px 10px;cursor:pointer;border-bottom:1px solid var(--line)}
+.tksg:last-child{border-bottom:0}
+.tksg b{font-size:13.5px;font-weight:700;overflow-wrap:anywhere}.tksg small{font-size:11.5px;color:var(--mute)}
+.tksg.dn b{text-decoration:line-through;color:var(--mute)}
+.tksg.add b{color:var(--accent)}
+.tksg.hi{background:color-mix(in srgb,var(--accent) 14%,transparent);box-shadow:inset 3px 0 0 var(--accent)}
+.tq.tkaddres{color:var(--accent);font-weight:700;font-size:14px;padding:10px 8px;cursor:pointer;overflow-wrap:anywhere}
+.tqc{flex:0 0 100%;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:2px 0 4px}
+.tqc button{min-height:34px;padding:0 12px;font-size:12.5px}
+.tqc input,.tqc select{width:auto;flex:1 1 84px;min-width:0;min-height:34px;padding:2px 8px;font-size:13px}
+.tqc input[data-ctl="dur"]{flex:0 1 72px}
 </style>
 <script>
 window.FB_CONFIG={
@@ -997,6 +1045,22 @@ window.FB_CONFIG={
 
 <section id="v-log">
   <div class="top">
+    <div class="dawn" id="dawn" aria-hidden="true">
+      <svg viewBox="0 0 1200 420" preserveAspectRatio="xMidYMax slice" focusable="false">
+        <defs>
+          <linearGradient id="dwSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b2f77"/><stop offset=".45" stop-color="#7a54c8"/><stop offset=".75" stop-color="#ee94ad"/><stop offset="1" stop-color="#f9c58b"/></linearGradient>
+          <radialGradient id="dwGlow"><stop offset="0" stop-color="#fff4cf"/><stop offset=".35" stop-color="#ffd08a" stop-opacity=".9"/><stop offset="1" stop-color="#ffb070" stop-opacity="0"/></radialGradient>
+        </defs>
+        <rect class="dw-sky" width="1200" height="420" fill="url(#dwSky)"/>
+        <g class="dw-stars" fill="#fff"><circle cx="120" cy="60" r="2"/><circle cx="260" cy="110" r="1.6"/><circle cx="420" cy="48" r="2"/><circle cx="610" cy="90" r="1.5"/><circle cx="760" cy="40" r="2"/><circle cx="1090" cy="80" r="1.8"/></g>
+        <g class="dw-sun"><circle class="dw-glow" cx="930" cy="170" r="190" fill="url(#dwGlow)"/><circle cx="930" cy="170" r="46" fill="#fff0c4"/></g>
+        <path class="dw-back" d="M0 300 L150 210 L260 280 L410 170 L560 290 L690 220 L820 300 L1000 200 L1200 290 V420 H0Z" fill="#5a4aa8" opacity=".75"/>
+        <path class="dw-mid" d="M0 350 L180 270 L330 340 L520 250 L700 345 L900 270 L1080 340 L1200 300 V420 H0Z" fill="#3a2f80"/>
+        <path class="dw-front" d="M0 395 C200 360 400 410 600 385 S1000 365 1200 392 V420 H0Z" fill="#241d5c"/>
+        <g class="dw-trees" fill="#1a1450"><path d="M40 420 V330 L70 360 L55 300 L90 345 L85 290 L115 350 V420Z"/><path d="M1100 420 V320 L1130 355 L1118 295 L1155 345 L1150 285 L1185 350 V420Z"/></g>
+      </svg>
+      <div class="dw-lit"></div><div class="dw-dim"></div>
+    </div>
     <div class="brand"><svg class="i" viewBox="0 0 24 24"><path d="M12 6c-2-1.5-5-2-8-1.5V18c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V4.5C17 4 14 4.500 12 6zM12 6v13.500"/></svg>StudyTrack</div>
     <div class="gr" id="h-greet">Good Morning!</div>
     <p>Small steps every day lead to big achievements.</p>
@@ -1078,22 +1142,21 @@ window.FB_CONFIG={
 <section id="v-tasks" hidden>
   <div class="seg" id="tk-seg"><button class="ghost" data-tk="syl" aria-pressed="true">Syllabus</button><button class="ghost" data-tk="tasks" aria-pressed="false">Tasks</button></div>
   <div id="tk-tasks" hidden>
-    <div class="card">
-      <div class="row tk-add-row" style="flex-wrap:nowrap"><input id="t-text" type="text" placeholder="Add a task" autocomplete="off" aria-label="Task title"><button id="t-add" style="flex:0 0 auto">Add</button></div>
+    <div class="card tkbar" id="tk-bar">
+      <div class="row tk-add-row"><input id="t-text" type="text" placeholder="Search or add a task" autocomplete="off" enterkeyhint="done" aria-label="Search or add a task"><button id="t-add" style="flex:0 0 auto">Add</button></div>
+      <div class="tksug" id="tk-sug" role="listbox" aria-label="Matching tasks" hidden></div>
       <div id="t-parse" class="tparse" hidden></div>
-      <div class="row"><div><label for="t-subj">Subject</label><select id="t-subj"></select></div><div><label for="t-due">Due date</label><input id="t-due" type="date"></div></div>
-      <details style="margin-top:8px"><summary style="color:var(--mute);font-size:13px;cursor:pointer">More options</summary><label for="t-prio">Priority</label><select id="t-prio"><option value="">None</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></details>
+      <div class="tkctl" id="tk-ctl"><select id="t-subj" aria-label="Subject"></select><input id="t-due" type="date" aria-label="Due date"><input id="t-time" type="time" aria-label="Due time (optional)"><input id="t-dur" type="text" placeholder="Length" autocomplete="off" aria-label="Length, for example 1h or 45m"><select id="t-prio" aria-label="Priority"><option value="">Priority</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></div>
     </div>
-    <div class="tk-overview-wrap"><div class="tk-overview-title">Quick summary</div><div class="tk-overview" id="tk-overview" aria-label="Task overview"><div><b>—</b><small>Open</small></div><div><b>—</b><small>Overdue</small></div><div><b>—</b><small>Due today</small></div><div><b>—</b><small>Completed</small></div></div></div>
     <div class="fchips" id="tk-chips"></div>
-    <div class="card" style="padding:10px">
-      <input id="tk-q" type="search" placeholder="Search tasks" aria-label="Search tasks" autocomplete="off">
-      <div class="row" style="margin-top:8px"><select id="tk-fs" aria-label="Filter by subject"></select><select id="tk-ft" aria-label="Filter by topic" hidden></select></div>
-      <div class="tk-priority"><span>Priority</span><div id="tk-priority-chips" class="fchips"><button class="fchip on" data-priority="">All</button><button class="fchip" data-priority="high">High</button><button class="fchip" data-priority="medium">Medium</button><button class="fchip" data-priority="low">Low</button><button class="fchip" data-priority="none">None</button></div></div><select id="tk-fp" aria-label="Filter by priority" style="display:none"><option value="">All priorities</option><option value="high">High priority</option><option value="medium">Medium priority</option><option value="low">Low priority</option><option value="none">No priority</option></select>
-      <div class="row" style="margin-top:8px;align-items:center"><span style="flex:0 0 auto;font-size:12px;color:var(--mute)">Sort by</span><select id="tk-sort" aria-label="Sort tasks"><option value="due">Due date</option><option value="prio">Priority</option><option value="new">Newest</option></select><button class="ghost" id="tk-select-mode" style="min-height:38px;padding:4px 12px">Select</button></div>
+    <div class="card tkflt">
+      <div class="tkfrow"><select id="tk-fs" aria-label="Filter by subject"></select><select id="tk-sort" aria-label="Sort tasks"><option value="due">Due date</option><option value="prio">Priority</option><option value="new">Newest</option></select><button class="ghost" id="tk-select-mode">Select</button></div>
+      <details class="tkmore"><summary>More filters</summary><select id="tk-ft" aria-label="Filter by topic" hidden></select><div class="tk-priority"><span>Priority</span><div id="tk-priority-chips" class="fchips"><button class="fchip on" data-priority="">All</button><button class="fchip" data-priority="high">High</button><button class="fchip" data-priority="medium">Medium</button><button class="fchip" data-priority="low">Low</button><button class="fchip" data-priority="none">None</button></div></div><select id="tk-fp" aria-label="Filter by priority" style="display:none"><option value="">All priorities</option><option value="high">High priority</option><option value="medium">Medium priority</option><option value="low">Low priority</option><option value="none">No priority</option></select></details>
     </div>
     <div class="tk-bulk" id="tk-bulk" hidden><b id="tk-selected-count">0 selected</b><button id="tk-bulk-done">Complete</button><button class="ghost" id="tk-bulk-todo">Mark to do</button><button class="ghost" id="tk-bulk-delete">Delete</button><button class="ghost" id="tk-bulk-clear">Clear</button></div>
+    <div class="row tk-bulk" id="tk-bulk-set" style="margin-top:8px" hidden><select id="tk-bulk-subj" aria-label="Set subject for selected tasks"></select><select id="tk-bulk-prio" aria-label="Set priority for selected tasks"><option value="">Priority…</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="none">No priority</option></select><input type="date" id="tk-bulk-due" aria-label="Set due date for selected tasks"><button id="tk-bulk-apply">Apply</button></div>
     <div class="card" id="tk-list"></div>
+    <div class="tk-sum" id="tk-overview" aria-label="Task overview"></div>
   </div>
   <div id="tk-syl"><div id="syl"></div></div>
 </section>
@@ -1267,7 +1330,11 @@ function lkReconcile(){
   var keep=S.plans.filter(function(p){
     if(!p||!p.taskId)return true;
     var k=tm[p.taskId];if(!k)return true;
-    if(k.deleted||k.status==='completed'||!k.dueDate||!/^\d{2}:\d{2}$/.test(k.dueTime||''))return false;
+    if(k.deleted||k.status==='completed'||!k.dueDate||!/^\d{2}:\d{2}$/.test(k.dueTime||'')){
+      /* Completed or deleted task with a planned session: keep its length on the task so reopening / Undo can bring the session back. */
+      if((k.deleted||k.status==='completed')&&k.dueDate&&/^\d{2}:\d{2}$/.test(k.dueTime||'')&&p.min>0)k.planMin=p.min;
+      return false;
+    }
     var sm=+k.dueTime.slice(0,2)*60+ +k.dueTime.slice(3);
     p.date=k.dueDate;p.startMin=sm;if(sm+p.min>1440)p.min=Math.max(1,1440-sm);
     return true;
@@ -1641,7 +1708,7 @@ $('#d-save').onclick=function(){
   if(t!==null){var dt=new Date(cSel+'T00:00:00');dt.setHours(0,t,0,0);L.start=dt.getTime()}
   if(sugSel.d&&$('#d-n').value===sugSel.d.t)L.tp=sugSel.d.k;sugSel.d=null;S.logs.push(L);
   if(dp&&dp.mode==='done'){S.plans=S.plans.filter(function(x){return x.id!==dp.id});infoId=null;infoConfirm=false}
-  if(tmFinishing){tmFinishing=false;tmReset()}save();closeDlg();draft=null;render();
+  var goCal=false;if(tmFinishing){goCal=tmFromCal;tmFinishing=false;tmReset()}save();closeDlg();draft=null;render();if(goCal)show('cal');
 };
 var slotLv=[60,45,30,15],slotMin=60,SLOT_PX=48,pd0=0,pinchAt=0;
 try{var sv=parseInt(localStorage.getItem('bcs-slot'),10);if(slotLv.indexOf(sv)>=0)slotMin=sv}catch(e){}
@@ -1823,7 +1890,7 @@ $('#c-info-del').onclick=function(){
 };
 $('#c-info-edit').onclick=function(){var p=planById(infoId);if(p)openDlg(p.startMin,p.min,{plan:p.id,planMode:'edit',mode:'plan',lock:true,pre:p})};
 $('#c-info-done').onclick=function(){var p=planById(infoId);if(p)openDlg(p.startMin,p.min,{plan:p.id,planMode:'done',mode:'log',lock:true,pre:p})};
-$('#c-info-start').onclick=function(){var p=planById(infoId);if(p)planStart(p.id)};
+$('#c-info-start').onclick=function(){var p=planById(infoId);if(p&&planStart(p.id))tmFromCal=true};
 $('#c-info-x').onclick=function(){infoId=null;infoConfirm=false;updInfo();fitTl()};
 $('#c-untimed').onclick=function(e){var b=e.target.closest('[data-blk]');if(b){infoId=b.dataset.blk;infoConfirm=false;draft=null;drawDraft();updInfo()}};
 function fitTl(){
@@ -1847,6 +1914,20 @@ function tickNow(){
 setInterval(tickNow,15000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden)tickNow()});
 window.addEventListener('focus',tickNow);window.addEventListener('pageshow',tickNow);
+/* Dawn banner: sun position and light follow the Daily Goal %. Display only, nothing is saved. */
+var dawnPct,dawnDone;
+function dawnMode(){var e=document.getElementById('dawn');if(!e)return;var u='';try{u=localStorage.getItem('bcs-banner')||''}catch(x){}e.classList.toggle('photo',!!u)}
+function dawnSet(pct,replay){
+  var e=document.getElementById('dawn');if(!e)return;
+  var p=Math.max(0,Math.min(1,(Number(pct)||0)/100));
+  dawnPct=pct;e.classList.toggle('full',p>=1);
+  if(replay||!dawnDone){
+    dawnDone=true;
+    if(e.offsetParent!==null){e.classList.add('reset');e.style.setProperty('--p','0');void e.offsetWidth;e.classList.remove('reset');void e.offsetWidth}
+  }
+  e.style.setProperty('--p',String(p));
+}
+function dawnReplay(){dawnSet(dawnPct,true)}
 function renderHome(){
   var td=0,tdc=0,perT={},tot=0,days={},per={},st=0,d=new Date(),ws=weekStart(),t=today(),wk=0;
   S.logs.forEach(function(l){tot+=l.min;days[l.date]=1;per[l.subj]=(per[l.subj]||0)+l.min;if(l.date>=ws&&l.date<=t)wk+=l.min;if(l.date===t){td+=l.min;tdc++;perT[l.subj]=(perT[l.subj]||0)+l.min}});
@@ -1854,7 +1935,7 @@ function renderHome(){
   while(days[ymd(d)]){st++;d.setDate(d.getDate()-1)}
   var gp=Math.min(100,Math.round(wk/((S.goal||10)*60)*100)),gd=Math.min(100,Math.round(td/((S.goal||10)*60/7)*100)),hr=new Date().getHours();
   $('#h-greet').textContent=hr<12?'Good Morning!':hr<17?'Good Afternoon!':'Good Evening!';
-  $('#h-total').textContent=fmt(td);$('#h-streak').textContent=st;$('#h-sess').textContent=tdc;$('#h-goal').textContent=gd+'%';$('#h-goalbar').style.width=gd+'%';$('#h-goalw').textContent=gp+'%';$('#h-goalwbar').style.width=gp+'%';
+  $('#h-total').textContent=fmt(td);$('#h-streak').textContent=st;$('#h-sess').textContent=tdc;$('#h-goal').textContent=gd+'%';$('#h-goalbar').style.width=gd+'%';$('#h-goalw').textContent=gp+'%';$('#h-goalwbar').style.width=gp+'%';dawnSet(gd);
   var keys=Object.keys(per).sort(function(a,b){return per[b]-per[a]}),C=2*Math.PI*42,off=0,g='<circle cx="60" cy="60" r="42" fill="none" stroke-width="18" style="stroke:var(--line)"/>';
   keys.forEach(function(k){var len=per[k]/tot*C;g+='<circle cx="60" cy="60" r="42" fill="none" stroke-width="18" stroke="'+COL[sidx(k)]+'" stroke-dasharray="'+len.toFixed(2)+' '+(C-len).toFixed(2)+'" stroke-dashoffset="'+(-off).toFixed(2)+'" transform="rotate(-90 60 60)"/>';off+=len});
   g+='<text x="60" y="58" text-anchor="middle" font-size="21" font-weight="800" style="fill:var(--ink)">'+(tot>=60?Math.round(tot/60)+'h':tot+'m')+'</text><text x="60" y="76" text-anchor="middle" font-size="14" style="fill:var(--mute)">Total</text>';
@@ -1891,7 +1972,7 @@ function applyBanner(){
   var u='',b=$('.top');
   try{u=localStorage.getItem('bcs-banner')||''}catch(e){}
   b.style.backgroundImage=u?'linear-gradient(180deg,rgba(20,15,60,.35),rgba(20,15,60,.6)),url("'+u+'")':'';
-  b.style.backgroundSize='cover';b.style.backgroundPosition='center';if(typeof applyScenes==='function')applyScenes();
+  b.style.backgroundSize='cover';b.style.backgroundPosition='center';if(typeof applyScenes==='function')applyScenes();if(typeof dawnMode==='function')dawnMode();
 }
 $('#bn-file').onchange=function(){
   var f=this.files[0];if(!f)return;
@@ -2126,14 +2207,14 @@ function tmTick(){tmDraw();var tg=tmTarget();if(tg&&!tm.chimed&&tmEl()>=tg*1000)
 function tmRun(){clearInterval(tm.iv);tm.iv=setInterval(tmTick,250)}
 function tmStop(){if(tm.run){tm.acc+=Date.now()-tm.t0;tm.run=false}clearInterval(tm.iv);tm.iv=null}
 function tmConfirmDiscard(){var m=Math.round(tmEl()/60000);return tm.brk||m<1||confirm('Discard this study session ('+m+' min)? Press Cancel, then use "Finish and log" to save it.')}
-function tmReset(){tmStop();tm.acc=0;tm.chimed=false;tm.brk=false;tm.plan=null;tmSave();tmDraw()}
-var tmFinishing=false;
+function tmReset(){tmStop();tm.acc=0;tm.chimed=false;tm.brk=false;tm.plan=null;tmFromCal=false;tmSave();tmDraw()}
+var tmFinishing=false,tmFromCal=false;
 function tmFinish(){var el=Math.min(1440,Math.max(1,Math.round(tmEl()/60000))),n=new Date();tmStop();tmSave();tmDraw();tmFinishing=true;cSel=today();var pp=tm.plan?planById(tm.plan):null;openDlg(Math.max(0,n.getHours()*60+n.getMinutes()-el),el,{lock:true,mode:'log',plan:pp?pp.id:null,planMode:'done',pre:pp})}
 function planStart(id){
-  var p=planById(id);if(!p)return;
-  if((tmEl()>0||tm.run)&&!tmConfirmDiscard())return;
+  var p=planById(id);if(!p)return false;
+  if((tmEl()>0||tm.run)&&!tmConfirmDiscard())return false;
   tmStop();tm.acc=0;tm.chimed=false;tm.brk=false;tm.mode='pomo';tm.pl=Math.max(60,Math.min(36000,p.min*60));tm.plan=p.id;
-  tm.run=true;tm.t0=Date.now();tmRun();tmSave();tmDraw();tmPrepareAudio();show('log');
+  tm.run=true;tm.t0=Date.now();tmRun();tmSave();tmDraw();tmPrepareAudio();show('log');tmFromCal=false;return true;
 }
 var tmAudio=null;function tmPrepareAudio(){try{var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;if(!tmAudio)tmAudio=new AC();if(tmAudio.state==='suspended')tmAudio.resume()}catch(e){}}
 function tmChime(){try{var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;if(!tmAudio)tmAudio=new AC();var ctx=tmAudio;function play(){var now=ctx.currentTime;[0,.28,.56].forEach(function(offset,i){var osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='sine';osc.frequency.value=[660,784,988][i];gain.gain.setValueAtTime(.0001,now+offset);gain.gain.exponentialRampToValueAtTime(.16,now+offset+.025);gain.gain.exponentialRampToValueAtTime(.0001,now+offset+.22);osc.connect(gain);gain.connect(ctx.destination);osc.start(now+offset);osc.stop(now+offset+.24)})}if(ctx.state==='suspended')ctx.resume().then(play).catch(function(){});else play()}catch(e){}}
@@ -2314,9 +2395,60 @@ function migrate(st,syl){
   return st;
 }
 function dmMkTask(o,now){return{id:nid('k'),title:o.title,subjectId:o.subjectId||null,unitId:o.unitId||null,topicId:o.topicId||null,dueDate:o.dueDate||null,priority:o.priority||null,status:'todo',createdAt:now,completedAt:null,updatedAt:now}}
-function dmSetStatus(k,status,now){k.status=status;k.completedAt=status==='completed'?now:null;k.updatedAt=now;return k}
+function dmSetStatus(k,status,now){
+  var was=k.status;
+  k.status=status;k.completedAt=status==='completed'?now:null;k.updatedAt=now;
+  if(status!=='completed'&&was==='completed')tkRestorePlan(k);
+  if(status==='completed'&&was!=='completed'&&k.repeat)tkSpawnNext(k,now);
+  return k;
+}
+/* Bring back the Calendar session of a task that was completed or deleted (length kept in task.planMin). */
+function tkRestorePlan(k){
+  if(typeof S==='undefined'||!S||!Array.isArray(S.plans)||!k||!k.planMin)return;
+  var mn=k.planMin;delete k.planMin;
+  if(!k.dueDate||!/^\d{2}:\d{2}$/.test(k.dueTime||''))return;
+  if(S.plans.some(function(x){return x.taskId===k.id}))return;
+  var sm=+k.dueTime.slice(0,2)*60+ +k.dueTime.slice(3);
+  S.plans.push({id:uid(),date:k.dueDate,startMin:sm,min:Math.max(1,Math.min(mn,1440-sm)),subj:k.subjectId||null,note:k.title,taskId:k.id});
+}
+/* Recurring tasks: next due date after the current one (and never in the past). */
+function tkNextDate(due,rep,todayStr){
+  var q=due.split('-'),y=+q[0],m=+q[1]-1,d0=+q[2];
+  function mk(yy,mm,dd){return new Date(yy,mm,dd,12)}
+  var cur=mk(y,m,d0),n=0,out;
+  do{
+    if(rep==='weekly')cur=mk(cur.getFullYear(),cur.getMonth(),cur.getDate()+7);
+    else if(rep==='weekdays'){do{cur=mk(cur.getFullYear(),cur.getMonth(),cur.getDate()+1)}while(cur.getDay()===0||cur.getDay()===6)}
+    else if(rep==='monthly'){var ny=cur.getFullYear(),nm=cur.getMonth()+1,last=new Date(ny,nm+1,0).getDate();cur=mk(ny,nm,Math.min(d0,last))}
+    else cur=mk(cur.getFullYear(),cur.getMonth(),cur.getDate()+1);
+    out=ymd(cur);n++;
+  }while((out<=due||out<todayStr)&&n<800);
+  return out;
+}
+var tkLastSpawn=null;
+function tkSpawnNext(k,now){
+  tkLastSpawn=null;
+  if(typeof S==='undefined'||!S||!Array.isArray(S.tasks)||!k||k.deleted||!k.repeat||!k.dueDate)return;
+  var nd=tkNextDate(k.dueDate,k.repeat,today());
+  if(S.tasks.some(function(x){return x!==k&&!x.deleted&&x.status!=='completed'&&x.repeat===k.repeat&&x.title===k.title&&x.dueDate===nd&&(x.subjectId||null)===(k.subjectId||null)}))return;
+  var nt=dmMkTask({title:k.title,subjectId:k.subjectId,unitId:k.unitId,topicId:k.topicId,dueDate:nd,priority:k.priority},now);
+  nt.repeat=k.repeat;
+  if(/^\d{2}:\d{2}$/.test(k.dueTime||'')){
+    nt.dueTime=k.dueTime;
+    var lp=S.plans.find(function(x){return x.taskId===k.id}),mn=lp?lp.min:(k.planMin||0);
+    if(mn){var sm=+k.dueTime.slice(0,2)*60+ +k.dueTime.slice(3);S.plans.push({id:uid(),date:nd,startMin:sm,min:Math.max(1,Math.min(mn,1440-sm)),subj:nt.subjectId||null,note:nt.title,taskId:nt.id})}
+  }
+  S.tasks.push(nt);
+  tkLastSpawn={title:nt.title,date:nd};
+}
 function dmDoneDay(k,ymdFn){return k.completedAt?ymdFn(new Date(k.completedAt)):''}
-function dmIsOverdue(k,today){return k.status!=='completed'&&!!k.dueDate&&k.dueDate<today}
+function dmIsOverdue(k,today){
+  if(k.status==='completed'||!k.dueDate)return false;
+  if(k.dueDate<today)return true;
+  /* due today with a time that has already passed also counts as overdue */
+  if(k.dueDate===today&&/^\d{2}:\d{2}$/.test(k.dueTime||'')){var n=new Date();return k.dueTime<pad(n.getHours())+':'+pad(n.getMinutes())}
+  return false;
+}
 function dmTopicProg(st,t){
   if(t.manuallyCompleted)return 100;
   var n=0,d=0;(st.tasks||[]).forEach(function(k){if(k.topicId===t.id&&!k.deleted){n++;if(k.status==='completed')d++}});
@@ -2341,6 +2473,19 @@ function dmTopicIndex(st){
   });
   return out;
 }
+function dmTaskIndex(st){
+  var un={},tp={},sb={},out=[];
+  st.units.forEach(function(u){un[u.id]=u});st.topics.forEach(function(t){tp[t.id]=t});st.subjects.forEach(function(x){sb[x.id]=x});
+  (st.tasks||[]).forEach(function(k){
+    if(!k||k.deleted||k.archivedAt||k.status==='completed'||!k.title)return;
+    var t=k.topicId?tp[k.topicId]:null;if(t&&(t.deleted||t.archivedAt))t=null;
+    var u=t?un[t.unitId]:(k.unitId?un[k.unitId]:null);
+    var sid=k.subjectId||(u&&u.subjectId)||null,x=sid?sb[sid]:null;
+    if(sid&&(!x||x.deleted||x.archivedAt))return;
+    out.push({k:t?t.id:null,t:k.title,p:t?t.title:'',subjectId:sid,sn:x?x.name:'General',task:true,l:(k.title+' '+(t?t.title:'')+' '+(u?u.title:'')+' '+(x?x.name+' '+(x.alt||''):'')).toLowerCase()});
+  });
+  return out;
+}
 function tkPrioW(p){return p==='high'?3:p==='medium'?2:p==='low'?1:0}
 function tkHay(st,k){
   var t=k.topicId?st.topics.find(function(x){return x.id===k.topicId}):null,u=t?st.units.find(function(x){return x.id===t.unitId}):null,sb=k.subjectId?st.subjects.find(function(x){return x.id===k.subjectId}):null;
@@ -2353,7 +2498,7 @@ function tkMatch(st,k,f,today){
   if(f.view==='doing'&&k.status!=='in_progress')return false;
   if(f.view==='done'&&open)return false;
   if(f.view==='overdue'&&!dmIsOverdue(k,today))return false;
-  if(f.view==='today'&&(!open||k.dueDate!==today))return false;
+  if(f.view==='today'&&(!open||!(k.dueDate===today||dmIsOverdue(k,today))))return false;
   if(f.view==='upcoming'&&(!open||!k.dueDate||k.dueDate<=today))return false;
   if(f.subj==='none'){if(k.subjectId)return false}else if(f.subj&&k.subjectId!==f.subj)return false;
   if(f.topic==='none'){if(k.topicId)return false}else if(f.topic&&k.topicId!==f.topic)return false;
@@ -2377,16 +2522,22 @@ function tkList(st,f,today){
 }
 function tkGroups(list,today){
   var g={od:[],td:[],up:[],nd:[],dn:[]};
-  list.forEach(function(k){if(k.status==='completed')g.dn.push(k);else if(k.dueDate&&k.dueDate<today)g.od.push(k);else if(k.dueDate===today)g.td.push(k);else if(k.dueDate)g.up.push(k);else g.nd.push(k)});
+  list.forEach(function(k){if(k.status==='completed')g.dn.push(k);else if(dmIsOverdue(k,today))g.od.push(k);else if(k.dueDate===today)g.td.push(k);else if(k.dueDate)g.up.push(k);else g.nd.push(k)});
   return[['Overdue',g.od],['Today',g.td],['Upcoming',g.up],['No due date',g.nd],['Completed',g.dn]].filter(function(x){return x[1].length});
 }
 function tkCounts(st,today){
-  var c={all:0,todo:0,doing:0,done:0,overdue:0,today:0,upcoming:0};
+  var c={all:0,todo:0,doing:0,done:0,overdue:0,today:0,upcoming:0,dueToday:0};
   st.tasks.forEach(function(k){
     if(k.deleted)return;c.all++;
     if(k.status==='completed'){c.done++;return}
     if(k.status==='in_progress')c.doing++;else c.todo++;
-    if(k.dueDate){if(k.dueDate<today)c.overdue++;else if(k.dueDate===today)c.today++;else c.upcoming++}
+    if(k.dueDate){
+      var od=dmIsOverdue(k,today);
+      if(od)c.overdue++;
+      if(k.dueDate===today&&!od)c.dueToday++;
+      if(od||k.dueDate===today)c.today++;   /* the Today filter = due today + overdue */
+      if(k.dueDate>today)c.upcoming++;
+    }
   });
   return c;
 }
@@ -2425,6 +2576,7 @@ function tkUpdate(st,k,p,now){
   if(p.dueDate!==undefined)k.dueDate=/^\d{4}-\d{2}-\d{2}$/.test(p.dueDate||'')?p.dueDate:null;
   if(p.dueTime!==undefined){if(/^([01]\d|2[0-3]):[0-5]\d$/.test(p.dueTime||'')&&k.dueDate)k.dueTime=p.dueTime;else if(k.dueTime)k.dueTime=null}
   if(p.priority!==undefined)k.priority=(p.priority==='low'||p.priority==='medium'||p.priority==='high')?p.priority:null;
+  if(p.repeat!==undefined){if((p.repeat==='daily'||p.repeat==='weekdays'||p.repeat==='weekly'||p.repeat==='monthly')&&k.dueDate)k.repeat=p.repeat;else delete k.repeat}
   if(p.status!==undefined&&p.status!==k.status&&(p.status==='todo'||p.status==='in_progress'||p.status==='completed'))dmSetStatus(k,p.status,now);
   else k.updatedAt=now;
   return{ok:true};
@@ -2660,9 +2812,10 @@ function sugSetup(inp,sel,key){
       box.innerHTML='<div class="sg" style="cursor:default;background:transparent"><small>Recent</small></div>'+last.map(function(x,i){return'<div class="sg" data-i="'+i+'"><b>'+esc(x.t)+'</b><small>'+esc(x.sn)+'</small></div>'}).join('');
       box.hidden=false;return;
     }
-    if(!S.units.length){box.hidden=true;return}
-    last=dmTopicIndex(S).filter(function(x){return x.l.indexOf(q)>-1}).sort(function(a,b){return(a.t.toLowerCase().indexOf(q)===0?0:1)-(b.t.toLowerCase().indexOf(q)===0?0:1)}).slice(0,6);
-    box.innerHTML=last.length?last.map(function(x,i){return'<div class="sg" data-i="'+i+'"><b>'+esc(x.t)+'</b><small>'+esc(x.sn)+(x.p?' &rsaquo; '+esc(x.p):'')+'</small></div>'}).join(''):'<div class="sg"><small>No matching topic. Your note will be saved as typed.</small></div>';
+    if(!S.units.length&&!(S.tasks&&S.tasks.length)){box.hidden=true;return}
+    var srt=function(a,b){return(a.t.toLowerCase().indexOf(q)===0?0:1)-(b.t.toLowerCase().indexOf(q)===0?0:1)};
+    last=dmTopicIndex(S).filter(function(x){return x.l.indexOf(q)>-1}).sort(srt).slice(0,4).concat(dmTaskIndex(S).filter(function(x){return x.l.indexOf(q)>-1}).sort(srt).slice(0,4));
+    box.innerHTML=last.length?last.map(function(x,i){return'<div class="sg" data-i="'+i+'"><b>'+esc(x.t)+'</b><small>'+(x.task?'Task &middot; ':'')+esc(x.sn)+(x.p?' &rsaquo; '+esc(x.p):'')+'</small></div>'}).join(''):'<div class="sg"><small>No matching topic or task. Your note will be saved as typed.</small></div>';
     box.hidden=false;
   }
   function pick(x){
@@ -2694,7 +2847,16 @@ function sugSetup(inp,sel,key){
 sugSetup($('#l-n'),$('#l-subj'),'l');
 sugSetup($('#d-n'),$('#d-subj'),'d');
 
-var tkF={view:'all',subj:'',topic:'',priority:'',q:'',sort:'due'},tkEdit=null,tkDraft=null,tkDelId=null,tkSelectMode=false,tkSelected={};
+var TK_REP={daily:'Daily',weekdays:'Weekdays',weekly:'Weekly',monthly:'Monthly'};
+/* "... daily", "... every week" at the END of a typed task sets a repeat (the words are removed from the title). */
+function tkRepStrip(text){
+  var x=String(text||'').trim(),m=/^(.*\S)\s+(every\s*day|daily|every\s*weekday|weekdays|every\s*week|weekly|every\s*month|monthly)$/i.exec(x);
+  if(!m)return{text:x,repeat:''};
+  var w=m[2].toLowerCase().replace(/\s+/g,''),r=/day$/.test(w)&&w!=='everyweekday'?'daily':/weekday/.test(w)?'weekdays':/week/.test(w)?'weekly':'monthly';
+  if(w==='daily'||w==='everyday')r='daily';
+  return{text:m[1],repeat:r};
+}
+var tkF={view:'all',subj:'',topic:'',priority:'',q:'',sort:'due'},tkEdit=null,tkDraft=null,tkDelId=null,tkSelectMode=false,tkSelected={},tkTyped='',tkHi=null;
 /* Natural date/time in the task input: "Revise physics tomorrow 5pm", "Mock test 15 nov 9:30am" */
 var TK_MON={jan:0,january:0,feb:1,february:1,mar:2,march:2,apr:3,april:3,may:4,jun:5,june:5,jul:6,july:6,aug:7,august:7,sep:8,sept:8,september:8,oct:9,october:9,nov:10,november:10,dec:11,december:11};
 var TK_WD={sunday:0,sun:0,monday:1,mon:1,tuesday:2,tue:2,tues:2,wednesday:3,wed:3,thursday:4,thu:4,thur:4,thurs:4,friday:5,fri:5,saturday:6,sat:6};
@@ -2752,7 +2914,7 @@ function tkParse(text,opt){
   }
   /* duration (only with a start time): "for 45 mins", "1.5 hrs", "2h", "1h 30m" */
   var dur=null;
-  if(time){
+  if(time||opt.upd){
     var DR=[[/\b(?:for\s+)?(\d{1,2})\s*(?:h|hrs?|hours?)\s*(?:and\s+)?(\d{1,2})\s*(?:m|mins?|minutes?)\b/i,function(x){return+x[1]*60+ +x[2]}],
       [/\b(?:for\s+)?(\d{1,2}(?:\.\d+)?)\s*(?:h|hrs?|hours?)\b/i,function(x){return Math.round(parseFloat(x[1])*60)}],
       [/\b(?:for\s+)?(\d{1,3})\s*(?:mins?|minutes?)\b/i,function(x){return+x[1]}],
@@ -2769,6 +2931,7 @@ function tkParse(text,opt){
   var title=s;
   cuts.sort(function(a,b){return b[0]-a[0]}).forEach(function(c){title=title.slice(0,c[0])+' '+title.slice(c[1])});
   title=title.replace(/\s+([,;:.!?])/g,'$1').replace(/\s{2,}/g,' ').replace(/^[\s,;:\-–]+/,'').replace(/(\s+(by|on|at|due|before|until|till|for|@))+[\s,;:\-–]*$/i,'').replace(/[\s,;:\-–]+$/,'').trim();
+  if(opt.upd)return{title:title,date:date,time:time,dur:dur};
   if(!title&&(date||time))return{title:text.trim(),date:null,time:null,needTitle:true};
   if(!title||(!date&&!time))return{title:text.trim(),date:null,time:null};
   if(time&&!date&&!opt.dateLocked){var nm=now.getHours()*60+now.getMinutes(),tm=+time.slice(0,2)*60+ +time.slice(3);date=addDays(tm>nm?0:1)}
@@ -2776,14 +2939,15 @@ function tkParse(text,opt){
 }
 function tkPreview(){
   var el=$('#t-parse');if(!el)return;
-  var x=$('#t-text').value.trim(),pr=x?tkParse(x,{dateLocked:!!$('#t-due').value}):null;
+  var ic=tkInlineCtx($('#t-text').value);if(ic){tkInlinePreview(ic);return}
+  var rs=tkRepStrip($('#t-text').value),x=rs.text,pr=x?tkParse(x,{dateLocked:!!$('#t-due').value}):null,rtag=rs.repeat?'Repeats '+TK_REP[rs.repeat].toLowerCase():'';
   if(pr&&pr.needTitle){el.textContent='Add a task name too, e.g. "Revise physics '+x+'"';el.hidden=false;return}
-  if(!pr||(!pr.date&&!pr.time)){el.hidden=true;el.textContent='';return}
+  if(!pr||(!pr.date&&!pr.time)){if(rtag&&pr){el.textContent=rtag+'  →  "'+pr.title+'"';el.hidden=false}else{el.hidden=true;el.textContent=''}return}
   var due=$('#t-due').value||pr.date,parts=[];
   if(due)parts.push(tkDueLabel(due,today())+(/^\d{4}-\d{2}-\d{2}$/.test(due)?' ('+new Date(due+'T00:00:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'})+')':''));
   if(pr.time)parts.push(tkTm(pr.time));
   if(pr.time&&pr.dur)parts.push(fmt(pr.dur));
-  el.textContent='Due: '+parts.join(' · ')+'  →  "'+pr.title+'"'+(pr.time&&pr.dur?'  (also added to Calendar)':'');el.hidden=false;
+  el.textContent='Due: '+parts.join(' · ')+(rtag?' · '+rtag:'')+'  →  "'+pr.title+'"'+(pr.time&&pr.dur?'  (also added to Calendar)':'');el.hidden=false;
 }
 /* Same live preview as the main Tasks input, for the "Add a task to this topic" input in the Syllabus */
 function sylTaskPreview(inp){
@@ -2798,17 +2962,25 @@ function sylTaskPreview(inp){
 }
 document.addEventListener('input',function(e){var t=e.target;if(t&&t.matches&&t.matches('[data-sm-input="topic-task"]'))sylTaskPreview(t)});
 function tkQuickAdd(){
+  if(tkHi&&tkHi!=='__add'){tkApplySet(tkHi);return}
   var x=$('#t-text').value.trim();if(!x)return;
+  var rs=tkRepStrip(x);x=rs.text;
+  var fd=$('#t-time').value||'',dv=tkDurParse($('#t-dur').value);
+  if(dv===null){toast('Length like 1h, 45m or 90 (minutes).');return}
   var pr=tkParse(x,{dateLocked:!!$('#t-due').value}),nt=dmMkTask({title:pr.title,subjectId:$('#t-subj').value||null,dueDate:$('#t-due').value||pr.date||null,priority:$('#t-prio').value||null},Date.now());
-  if(pr.time&&nt.dueDate){nt.dueTime=pr.time;
-    if(pr.dur){var sm0=+pr.time.slice(0,2)*60+ +pr.time.slice(3);S.plans.push({id:uid(),date:nt.dueDate,startMin:sm0,min:Math.max(1,Math.min(pr.dur,1440-sm0)),subj:nt.subjectId||null,note:nt.title,taskId:nt.id})}}
+  var tv=fd||pr.time||'',dur=dv||pr.dur||0;
+  if(rs.repeat){nt.repeat=rs.repeat;if(!nt.dueDate)nt.dueDate=today()}
+  if(fd&&!nt.dueDate){toast('Pick a date to add a time.');return}
+  if(dv&&!tv){toast('Set a time first to add a length.');return}
+  if(tv&&nt.dueDate){nt.dueTime=tv;
+    if(dur){var sm0=+tv.slice(0,2)*60+ +tv.slice(3);S.plans.push({id:uid(),date:nt.dueDate,startMin:sm0,min:Math.max(1,Math.min(dur,1440-sm0)),subj:nt.subjectId||null,note:nt.title,taskId:nt.id})}}
   S.tasks.push(nt);
-  $('#t-text').value='';$('#t-due').value='';$('#t-prio').value='';tkPreview();
+  $('#t-text').value='';$('#t-due').value='';$('#t-time').value='';$('#t-dur').value='';$('#t-prio').value='';tkTyped='';tkHi=null;tkF.q='';tkPreview();tkBarSync();
   save();render();$('#t-text').focus();
 }
 function tkEditor(k){
   var d=tkDraft,sel=function(v,x){return v===x?' selected':''};
-  return'<div class="tq tqx" data-id="'+k.id+'"><div style="width:100%"><input data-f="title" value="'+esc(d.title)+'" aria-label="Task title"><div class="row" style="margin-top:8px"><select data-f="subj" aria-label="Subject"><option value="">General</option>'+S.subjects.filter(function(s){return!s.archivedAt&&!s.deleted}).map(function(s){return'<option value="'+s.id+'"'+sel(d.subj,s.id)+'>'+esc(s.alt||s.name)+'</option>'}).join('')+'</select><input type="date" data-f="due" value="'+esc(d.due)+'" aria-label="Due date"><input type="time" data-f="dueTime" value="'+esc(d.dueTime!==undefined?d.dueTime:(k.dueTime||''))+'" aria-label="Due time (optional)"></div><div class="row" style="margin-top:8px"><select data-f="topic" aria-label="Syllabus topic"><option value="">No syllabus topic</option>'+tkTopicOptions(S,d.subj).map(function(o){return'<option value="'+o.id+'"'+sel(d.topic,o.id)+'>'+esc(o.label)+'</option>'}).join('')+'</select></div><div class="row" style="margin-top:8px"><select data-f="prio" aria-label="Priority">'+[['','No priority'],['low','Low priority'],['medium','Medium priority'],['high','High priority']].map(function(o){return'<option value="'+o[0]+'"'+sel(d.prio,o[0])+'>'+o[1]+'</option>'}).join('')+'</select></div><div class="seg" style="margin:8px 0 0">'+[['todo','To do'],['in_progress','In progress'],['completed','Completed']].map(function(o){return'<button class="ghost" data-act="status" data-s="'+o[0]+'" aria-pressed="'+(d.status===o[0])+'">'+o[1]+'</button>'}).join('')+'</div><div class="row" style="margin-top:10px"><button class="ghost" data-act="cancel">Cancel</button><button class="ghost" data-act="del"'+(tkDelId===k.id?' style="color:var(--bad)"':'')+'>'+(tkDelId===k.id?'Delete?':'Delete')+'</button><button data-act="save">Save</button></div></div></div>';
+  return'<div class="tq tqx" data-id="'+k.id+'"><div style="width:100%"><input data-f="title" value="'+esc(d.title)+'" aria-label="Task title"><div class="row" style="margin-top:8px"><select data-f="subj" aria-label="Subject"><option value="">General</option>'+S.subjects.filter(function(s){return!s.archivedAt&&!s.deleted}).map(function(s){return'<option value="'+s.id+'"'+sel(d.subj,s.id)+'>'+esc(s.alt||s.name)+'</option>'}).join('')+'</select><input type="date" data-f="due" value="'+esc(d.due)+'" aria-label="Due date"><input type="time" data-f="dueTime" value="'+esc(d.dueTime!==undefined?d.dueTime:(k.dueTime||''))+'" aria-label="Due time (optional)"></div><div class="row" style="margin-top:8px"><select data-f="topic" aria-label="Syllabus topic"><option value="">No syllabus topic</option>'+tkTopicOptions(S,d.subj).map(function(o){return'<option value="'+o.id+'"'+sel(d.topic,o.id)+'>'+esc(o.label)+'</option>'}).join('')+'</select></div><div class="row" style="margin-top:8px"><select data-f="prio" aria-label="Priority">'+[['','No priority'],['low','Low priority'],['medium','Medium priority'],['high','High priority']].map(function(o){return'<option value="'+o[0]+'"'+sel(d.prio,o[0])+'>'+o[1]+'</option>'}).join('')+'</select><input type="text" data-f="dur" autocomplete="off" placeholder="Length (1h, 45m)" value="'+esc(d.dur!==undefined?d.dur:(tkPlanOf(k)?tkDurFmt(tkPlanOf(k).min):''))+'" aria-label="Session length, for example 1h or 45m"><select data-f="repeat" aria-label="Repeat">'+[['','No repeat'],['daily','Repeat daily'],['weekdays','Repeat weekdays'],['weekly','Repeat weekly'],['monthly','Repeat monthly']].map(function(o){return'<option value="'+o[0]+'"'+sel(d.repeat!==undefined?d.repeat:(k.repeat||''),o[0])+'>'+o[1]+'</option>'}).join('')+'</select></div><div class="seg" style="margin:8px 0 0">'+[['todo','To do'],['in_progress','In progress'],['completed','Completed']].map(function(o){return'<button class="ghost" data-act="status" data-s="'+o[0]+'" aria-pressed="'+(d.status===o[0])+'">'+o[1]+'</button>'}).join('')+'</div><div class="row" style="margin-top:10px"><button class="ghost" data-act="cancel">Cancel</button><button class="ghost" data-act="del"'+(tkDelId===k.id?' style="color:var(--bad)"':'')+'>'+(tkDelId===k.id?'Delete?':'Delete')+'</button><button data-act="save">Save</button></div></div></div>';
 }
 function tkRow(k,t0,tm){
   if(tkEdit===k.id&&tkDraft)return tkEditor(k);
@@ -2817,14 +2989,16 @@ function tkRow(k,t0,tm){
   if(k.topicId&&tm[k.topicId])meta.push('<span>'+esc(tm[k.topicId].title)+'</span>');
   if(k.dueDate)meta.push('<span class="'+(od?'od':'')+'">'+tkDueLabel(k.dueDate,t0)+(k.dueTime?', '+tkTm(k.dueTime)+tkLen(k):'')+'</span>');
   if(k.priority)meta.push('<span><i class="pd p-'+k.priority+'"></i>'+k.priority+'</span>');
-  return'<div class="tq'+(dn?' done':'')+(tkSelected[k.id]?' selected':'')+'" data-id="'+k.id+'">'+(tkSelectMode?'<label class="tk-select"><input type="checkbox" data-act="select" '+(tkSelected[k.id]?'checked':'')+' aria-label="Select task"></label>':'')+'<button class="tcb'+(dn?' on':dg?' half':'')+'" data-act="toggle" role="checkbox" aria-checked="'+dn+'" aria-label="'+(dn?'Mark as to do':'Mark as completed')+'"></button><div class="tqb" data-act="edit"><div class="tqt">'+esc(k.title)+'</div>'+(meta.length?'<div class="tqm">'+meta.join('')+'</div>':'')+'</div>'+(dn?'':dg?'<button class="tqs on" data-act="stop">In progress</button>':'<button class="tqs" data-act="start">Start</button>')+'</div>';
+  if(k.repeat&&TK_REP[k.repeat])meta.push('<span>\u21bb '+TK_REP[k.repeat]+'</span>');
+  var rs=(od&&!dn&&tkHi!==k.id)?'<div style="display:flex;gap:6px;margin-top:5px"><button class="tqs" data-act="qday" data-d="0">Today</button><button class="tqs" data-act="qday" data-d="1">Tomorrow</button></div>':'';
+  return'<div class="tq'+(dn?' done':'')+(tkSelected[k.id]?' selected':'')+(tkHi===k.id?' hi':'')+'" data-id="'+k.id+'">'+(tkSelectMode?'<label class="tk-select"><input type="checkbox" data-act="select" '+(tkSelected[k.id]?'checked':'')+' aria-label="Select task"></label>':'')+'<button class="tcb'+(dn?' on':dg?' half':'')+'" data-act="toggle" role="checkbox" aria-checked="'+dn+'" aria-label="'+(dn?'Mark as to do':'Mark as completed')+'"></button><div class="tqb" data-act="edit" tabindex="0" role="button"><div class="tqt">'+esc(k.title)+'</div>'+(meta.length?'<div class="tqm">'+meta.join('')+'</div>':'')+rs+'</div>'+(dn?'':dg?'<button class="tqs on" data-act="stop">In progress</button>':'<button class="tqs" data-act="start">Start</button>')+((tkTyped||'').trim()&&!dn&&tkHi!==k.id?'<button class="tqs" data-act="sched">Set time</button>':'')+'</div>';
 }
 function renderTasks(){
   var el=$('#tk-list');if(!el)return;
-  var t0=today(),cnt=tkCounts(S,t0),tm={},h='';
+  var t0=today(),cnt=tkCounts(S,t0),tm={},h='';tkOdSig=cnt.overdue;
   S.topics.forEach(function(t){tm[t.id]=t});
   var V=[['all','All',cnt.all],['todo','To do',cnt.todo],['doing','In progress',cnt.doing],['done','Completed',cnt.done],['overdue','Overdue',cnt.overdue],['today','Today',cnt.today],['upcoming','Upcoming',cnt.upcoming]];
-  $('#tk-overview').innerHTML=[['Open',cnt.todo+cnt.doing],['Overdue',cnt.overdue],['Due today',cnt.today],['Completed',cnt.done]].map(function(x){return'<div><b>'+x[1]+'</b><small>'+x[0]+'</small></div>'}).join('');
+  $('#tk-overview').textContent=(cnt.todo+cnt.doing)+' open \u00b7 '+cnt.overdue+' overdue \u00b7 '+cnt.dueToday+' due today \u00b7 '+cnt.done+' completed';
   $('#tk-chips').innerHTML=V.map(function(v){return'<button class="fchip'+(tkF.view===v[0]?' on':'')+(v[0]==='overdue'&&v[2]?' warn':'')+'" data-view="'+v[0]+'">'+v[1]+(v[2]&&v[0]!=='all'?' <i>'+v[2]+'</i>':'')+'</button>'}).join('');
   var fs=$('#tk-fs');
   fs.innerHTML='<option value="">All subjects</option><option value="none">General (no subject)</option>'+S.subjects.map(function(s){return'<option value="'+s.id+'">'+esc(s.alt||s.name)+'</option>'}).join('');
@@ -2837,23 +3011,42 @@ function renderTasks(){
   var selectedCount=Object.keys(tkSelected).filter(function(id){return tkSelected[id]&&S.tasks.some(function(k){return k.id===id&&!k.deleted})}).length;
   $('#tk-select-mode').textContent=tkSelectMode?'Done selecting':'Select tasks';$('#tk-bulk').hidden=!tkSelectMode;$('#tk-selected-count').textContent=selectedCount+' selected';
   $('#tk-bulk-done').disabled=!selectedCount;$('#tk-bulk-todo').disabled=!selectedCount;$('#tk-bulk-delete').disabled=!selectedCount;
+  var bs=$('#tk-bulk-subj'),bsv=bs.value;
+  bs.innerHTML='<option value="">Subject…</option><option value="none">General</option>'+S.subjects.filter(function(s){return!s.archivedAt&&!s.deleted}).map(function(s){return'<option value="'+s.id+'">'+esc(s.alt||s.name)+'</option>'}).join('');
+  bs.value=bsv;$('#tk-bulk-set').hidden=!tkSelectMode;$('#tk-bulk-apply').disabled=!selectedCount;
   var list=tkList(S,tkF,t0),row=function(k){return tkRow(k,t0,tm)};
-  if(!S.tasks.length)h='<div class="empty">No tasks yet. Add your first one above.</div>';
-  else if(!list.length)h='<div class="empty">No tasks match. Try another filter.</div>';
+  if(!S.tasks.length)h='<div class="empty">No tasks yet. Type one above and press Enter.</div>';
+  else if(!list.length)h='<div class="empty">'+((tkTyped||'').trim()?'No task matches. Press Enter to add it.':'No tasks match. Try another filter.')+'</div>';
   else if(tkF.view==='all'){
     tkGroups(list,t0).forEach(function(g){
-      var items=g[1],more=0;
+      var items=g[1],more=0,acts='';
       if(g[0]==='Completed'&&items.length>10){more=items.length-10;items=items.slice(0,10)}
-      h+='<div class="tgh">'+g[0]+' <span>'+g[1].length+'</span></div>'+items.map(row).join('')+(more?'<div style="padding:4px;font-size:12px;color:var(--mute)">+'+more+' more under Completed</div>':'');
+      if(g[0]==='Overdue')acts+=tkOdBtn();
+      if(tkSelectMode)acts+=tkSelBtn(items.map(function(k){return k.id}),g[0]);
+      h+=tkHdr(g[0],g[1].length,acts)+items.map(row).join('')+(more?'<div style="padding:4px 2px"><button class="tqs" data-act="showdone">Show all '+g[1].length+' completed</button></div>':'');
     });
-  }else h=list.map(row).join('');
-  el.innerHTML=h;
+  }else{
+    var acts2='';
+    if(tkF.view==='overdue'&&list.length)acts2+=tkOdBtn();
+    if(tkSelectMode)acts2+=tkSelBtn(list.map(function(k){return k.id}),'*');
+    h=(acts2?tkHdr(tkF.view==='overdue'?'Overdue':'Showing',list.length,acts2):'')+list.map(row).join('');
+  }
+  var ad='';
+  if(tkHi&&tkHi!=='__add'&&!S.tasks.some(function(x){return x.id===tkHi&&!x.deleted}))tkHi=null;
+  el.innerHTML=ad+h;tkBarSync();tkSugRender();
 }
 $('#tk-list').addEventListener('click',function(e){
   var a=e.target.closest?e.target.closest('[data-act]'):null;if(!a)return;
   var row=a.closest('.tq'),id=row?row.dataset.id:null,k=id?S.tasks.find(function(x){return x.id===id}):null,act=a.dataset.act,now=Date.now();
+  if(act==='addnew'){tkQuickAdd();return}
+  if(act==='showdone'){tkF.view='done';renderTasks();return}
+  if(act==='odall'){tkOverdueToToday();return}
+  if(act==='selgroup'){tkSelectGroup(a.dataset.g);return}
+  if(act==='sched'&&k){tkSetHi(k.id);tkEndCaret();return}
+  if(act==='qday'&&k){tkApplyDay(k.id,parseInt(a.dataset.d,10)||0);return}
+  if(act==='qset'&&k){tkApplySet(k.id);return}
   if(act==='select'&&k){return}
-  if(act==='toggle'&&k){dmSetStatus(k,k.status==='completed'?'todo':'completed',now);save();render();return}
+  if(act==='toggle'&&k){var wasDone=k.status==='completed';dmSetStatus(k,wasDone?'todo':'completed',now);save();render();if(!wasDone)tkDoneBar(k);return}
   if(act==='start'&&k){dmSetStatus(k,'in_progress',now);save();render();return}
   if(act==='stop'&&k){dmSetStatus(k,'todo',now);save();render();return}
   if(act==='edit'&&k){tkEdit=k.id;tkDraft={title:k.title,subj:k.subjectId||'',topic:k.topicId||'',due:k.dueDate||'',dueTime:k.dueTime||'',prio:k.priority||'',status:k.status};tkDelId=null;renderTasks();return}
@@ -2861,32 +3054,124 @@ $('#tk-list').addEventListener('click',function(e){
   if(act==='status'&&tkDraft){tkDraft.status=a.dataset.s;renderTasks();return}
   if(act==='save'&&k&&tkDraft){
     if(tkDraft.dueTime&&!tkDraft.due){toast('Set a due date to add a time.');return}
-    var r=tkUpdate(S,k,{title:tkDraft.title,subjectId:tkDraft.subj||null,topicId:tkDraft.topic||null,dueDate:tkDraft.due||null,dueTime:tkDraft.dueTime,priority:tkDraft.prio||null,status:tkDraft.status},now);
+    var effT=tkDraft.dueTime!==undefined?tkDraft.dueTime:(k.dueTime||''),durTouched=tkDraft.dur!==undefined,dv=0;
+    if(durTouched){dv=tkDurParse(tkDraft.dur);if(dv===null){toast('Length like 1h, 45m or 90 (minutes).');return}}
+    if(dv&&!(tkDraft.due&&effT)){toast('Set a date and time first to add a length.');return}
+    if(tkDraft.repeat&&!tkDraft.due){toast('Set a due date to repeat a task.');return}
+    var r=tkUpdate(S,k,{title:tkDraft.title,subjectId:tkDraft.subj||null,topicId:tkDraft.topic||null,dueDate:tkDraft.due||null,dueTime:tkDraft.dueTime,priority:tkDraft.prio||null,repeat:tkDraft.repeat,status:tkDraft.status},now);
     if(!r.ok){toast(r.error);return}
+    if(durTouched){
+      var lp0=tkPlanOf(k);
+      if(dv&&k.dueDate&&k.dueTime){var sm0=+k.dueTime.slice(0,2)*60+ +k.dueTime.slice(3),mn0=Math.max(1,Math.min(dv,1440-sm0));if(lp0)lp0.min=mn0;else S.plans.push({id:uid(),date:k.dueDate,startMin:sm0,min:mn0,subj:k.subjectId||null,note:k.title,taskId:k.id})}
+      else if(!dv&&lp0){S.plans=S.plans.filter(function(x){return x.taskId!==k.id})}
+    }
     tkEdit=null;tkDraft=null;save();render();return;
   }
   if(act==='del'&&k){
     if(tkDelId!==k.id){tkDelId=k.id;renderTasks();return}
-    dmDeleteTask(k,now);tkEdit=null;tkDraft=null;tkDelId=null;save();render();
+    var did=k.id;dmDeleteTask(k,now);tkEdit=null;tkDraft=null;tkDelId=null;save();render();tkUndoBar([did],'Task deleted');
   }
 });
 function tkDraftSet(e){var f=e.target.dataset&&e.target.dataset.f;if(f&&tkDraft)tkDraft[f]=e.target.value}
 $('#tk-list').addEventListener('input',tkDraftSet);
 $('#tk-list').addEventListener('change',function(e){if(e.target.dataset&&e.target.dataset.act==='select'){var row=e.target.closest('.tq');if(row){tkSelected[row.dataset.id]=!!e.target.checked;renderTasks()}return}tkDraftSet(e);if(e.target.dataset&&e.target.dataset.f==='subj'&&tkDraft){tkDraft.topic='';renderTasks()}});
+/* ---- Tasks extras: shared action bar (Undo / Log time), overdue helpers, select-all, bulk set, keyboard ---- */
+var tkBarEl=null,tkBarTimer=0,tkOdSig;
+function tkBarHide(){clearTimeout(tkBarTimer);if(tkBarEl)tkBarEl.hidden=true}
+function tkBar(msg,label,fn,ms){
+  if(!tkBarEl){tkBarEl=document.createElement('div');tkBarEl.className='toast tt-undo';tkBarEl.hidden=true;tkBarEl.setAttribute('role','status');document.body.appendChild(tkBarEl)}
+  tkBarEl.innerHTML='<span></span><button type="button"></button>';
+  tkBarEl.firstChild.textContent=msg;tkBarEl.lastChild.textContent=label;
+  tkBarEl.lastChild.onclick=function(){tkBarHide();fn()};
+  tkBarEl.hidden=false;clearTimeout(tkBarTimer);tkBarTimer=setTimeout(tkBarHide,ms||6000);
+}
+function tkUndoBar(ids,msg){
+  if(!ids||!ids.length)return;
+  tkBar(msg,'Undo',function(){
+    var now=Date.now();
+    ids.forEach(function(id){var k=S.tasks.find(function(x){return x.id===id});if(k&&k.deleted){k.deleted=false;delete k.deletedAt;k.updatedAt=now;tkRestorePlan(k)}});
+    save();render();
+  },6000);
+}
+function tkDoneBar(k){
+  var sp=tkLastSpawn&&tkLastSpawn.title===k.title?tkLastSpawn:null;
+  tkBar('Task completed'+(sp?' \u00b7 next: '+tkDueLabel(sp.date,today()):''),'Log time',function(){tkLogFor(k)},7000);
+}
+function tkLogFor(k){
+  var lp=S.plans.find(function(x){return x.taskId===k.id}),mn=lp?lp.min:(k.planMin||0);
+  show('log');
+  var f=$('#logform');f.hidden=false;$('#h-log').textContent='Close';
+  $('#l-n').value=k.title;
+  if(k.subjectId&&Array.prototype.some.call($('#l-subj').options,function(o){return o.value===k.subjectId}))$('#l-subj').value=k.subjectId;
+  $('#l-h').value=mn?(Math.floor(mn/60)||''):'';$('#l-m').value=mn?(mn%60||''):'';
+  if(k.topicId&&typeof sugSel!=='undefined')sugSel.l={k:k.topicId,t:k.title};
+  fitHome();f.scrollIntoView({behavior:'smooth',block:'center'});$('#l-h').focus({preventScroll:true});
+}
+function tkNowHM(){var n=new Date();return pad(n.getHours())+':'+pad(n.getMinutes())}
+function tkHdr(title,count,acts){return'<div class="tgh" style="display:flex;align-items:center;gap:8px">'+title+' <span>'+count+'</span>'+(acts?'<span style="margin-left:auto;display:inline-flex;gap:6px">'+acts+'</span>':'')+'</div>'}
+function tkOdBtn(){return'<button class="tqs" data-act="odall" style="text-transform:none;letter-spacing:0">Move all to today</button>'}
+function tkSelBtn(ids,label){var all=ids.length&&ids.every(function(id){return tkSelected[id]});return'<button class="tqs" data-act="selgroup" data-g="'+label+'" style="text-transform:none;letter-spacing:0">'+(all?'Unselect':'Select all')+'</button>'}
+function tkOverdueToToday(){
+  var t0=today(),hm=tkNowHM(),now=Date.now(),n=0;
+  tkList(S,tkF,t0).forEach(function(k){
+    if(!dmIsOverdue(k,t0))return;
+    var q={dueDate:t0};if(k.dueTime&&k.dueTime<hm)q.dueTime='';
+    if(tkUpdate(S,k,q,now).ok)n++;
+  });
+  if(!n){toast('No overdue tasks to move.');return}
+  save();render();toast(n+' task'+(n===1?'':'s')+' moved to today.');
+}
+function tkSelectGroup(g){
+  var t0=today(),lst=tkList(S,tkF,t0),ids;
+  if(g==='*')ids=lst.map(function(k){return k.id});
+  else{var gg=tkGroups(lst,t0).filter(function(x){return x[0]===g})[0];ids=gg?gg[1].map(function(k){return k.id}):[];if(g==='Completed')ids=ids.slice(0,10)}
+  var all=ids.length&&ids.every(function(id){return tkSelected[id]});
+  ids.forEach(function(id){if(all)delete tkSelected[id];else tkSelected[id]=true});
+  renderTasks();
+}
+$('#tk-bulk-apply').addEventListener('click',function(){
+  var ids=Object.keys(tkSelected).filter(function(id){return tkSelected[id]&&S.tasks.some(function(k){return k.id===id&&!k.deleted})});
+  if(!ids.length){toast('Select at least one task.');return}
+  var sv=$('#tk-bulk-subj').value,pv=$('#tk-bulk-prio').value,dv=$('#tk-bulk-due').value,q={};
+  if(!sv&&!pv&&!dv){toast('Choose a subject, priority or due date to apply.');return}
+  if(sv)q.subjectId=sv==='none'?null:sv;
+  if(pv)q.priority=pv==='none'?'':pv;
+  if(dv)q.dueDate=dv;
+  var now=Date.now();
+  S.tasks.forEach(function(k){if(tkSelected[k.id]&&!k.deleted)tkUpdate(S,k,q,now)});
+  $('#tk-bulk-subj').value='';$('#tk-bulk-prio').value='';$('#tk-bulk-due').value='';tkSelected={};
+  save();render();toast(ids.length+' task'+(ids.length===1?'':'s')+' updated.');
+});
+/* Keyboard: Enter / Space on a task title opens Edit; Esc closes the inline editor. */
+$('#tk-list').addEventListener('keydown',function(e){
+  var t=e.target;if(!t||e.isComposing)return;
+  if(e.key==='Escape'&&t.closest&&t.closest('.tqx')){
+    var xid=t.closest('.tqx').dataset.id;e.preventDefault();tkEdit=null;tkDraft=null;tkDelId=null;renderTasks();
+    var back=document.querySelector('#tk-list .tq[data-id="'+xid+'"] .tqb');if(back)back.focus();return;
+  }
+  if((e.key==='Enter'||e.key===' ')&&t.classList&&t.classList.contains('tqb')&&!e.shiftKey&&!e.ctrlKey&&!e.altKey&&!e.metaKey){e.preventDefault();t.click()}
+});
+/* Overdue-by-time: refresh the list when a task passes its time (not while you are typing or editing). */
+setInterval(function(){
+  var v=$('#v-tasks');if(!v||v.hidden||document.hidden)return;
+  var t0=today(),n=0;S.tasks.forEach(function(k){if(!k.deleted&&dmIsOverdue(k,t0))n++});
+  if(n===tkOdSig)return;
+  var a=document.activeElement;
+  if(!tkEdit&&tkHi===null&&!(a&&a.closest&&a.closest('#tk-list')))renderTasks();
+},30000);
 $('#tk-chips').addEventListener('click',function(e){var b=e.target.closest?e.target.closest('[data-view]'):null;if(b){tkF.view=b.dataset.view;renderTasks()}});
 $('#tk-fs').addEventListener('change',function(){tkF.subj=this.value;tkF.topic='';renderTasks()});
 $('#tk-ft').addEventListener('change',function(){tkF.topic=this.value;renderTasks()});
 $('#tk-fp').addEventListener('change',function(){tkF.priority=this.value;renderTasks()});
 $('#tk-priority-chips').addEventListener('click',function(e){var b=e.target.closest?e.target.closest('[data-priority]'):null;if(!b)return;tkF.priority=b.dataset.priority;$('#tk-fp').value=tkF.priority;renderTasks()});
 $('#tk-sort').addEventListener('change',function(){tkF.sort=this.value;renderTasks()});
-$('#tk-q').addEventListener('input',function(){tkF.q=this.value;renderTasks()});
+/* search now lives in the combined #t-text bar (see "Tasks bar" below) */
 $('#tk-select-mode').addEventListener('click',function(){tkSelectMode=!tkSelectMode;if(!tkSelectMode)tkSelected={};renderTasks()});
 function tkBulkApply(status){var ids=Object.keys(tkSelected).filter(function(id){return tkSelected[id]});if(!ids.length){toast('Select at least one task.');return}var now=Date.now();S.tasks.forEach(function(k){if(tkSelected[k.id])dmSetStatus(k,status,now)});tkSelected={};save();render();toast(ids.length+' task'+(ids.length===1?'':'s')+' updated.')}
 $('#tk-bulk-done').addEventListener('click',function(){tkBulkApply('completed')});
 $('#tk-bulk-todo').addEventListener('click',function(){tkBulkApply('todo')});
 $('#tk-bulk-clear').addEventListener('click',function(){tkSelected={};renderTasks()});
-$('#tk-bulk-delete').addEventListener('click',function(){var ids=Object.keys(tkSelected).filter(function(id){return tkSelected[id]});if(!ids.length){toast('Select at least one task.');return}if(!confirm('Delete '+ids.length+' selected task'+(ids.length===1?'':'s')+'? This cannot be undone. Export a backup first if unsure.'))return;var now=Date.now();S.tasks.forEach(function(k){if(tkSelected[k.id])dmDeleteTask(k,now)});tkSelected={};save();render();toast(ids.length+' task'+(ids.length===1?'':'s')+' deleted.')});
-$('#t-text').addEventListener('keydown',function(e){if(e.key==='Enter')tkQuickAdd()});
+$('#tk-bulk-delete').addEventListener('click',function(){var ids=Object.keys(tkSelected).filter(function(id){return tkSelected[id]});if(!ids.length){toast('Select at least one task.');return}if(!confirm('Delete '+ids.length+' selected task'+(ids.length===1?'':'s')+'? You can undo right after.'))return;var now=Date.now(),delIds=[];S.tasks.forEach(function(k){if(tkSelected[k.id]&&!k.deleted){dmDeleteTask(k,now);delIds.push(k.id)}});tkSelected={};save();render();tkUndoBar(delIds,delIds.length+' task'+(delIds.length===1?'':'s')+' deleted')});
 $('#t-text').addEventListener('input',tkPreview);$('#t-due').addEventListener('change',tkPreview);
 // Desktop: pressing Enter in a single-line field triggers that form's save/add button.
 document.addEventListener('keydown',function(e){
@@ -2900,26 +3185,228 @@ document.addEventListener('keydown',function(e){
   if(!btn||btn.disabled||btn.closest('[hidden]'))return;
   e.preventDefault();btn.click();
 });
-/* Keyboard flow for adding tasks.
-   Tasks box: Task text -> Subject -> Due date -> More options -> Priority -> Add. Right/Left arrows move along that order
-   (in the text box only at the very end/start of the text, so editing is not disturbed; the Due date keeps its own arrows, use Tab to leave it).
-   Enter adds from the dropdowns and the More options line too (Enter in the text box and Due date is handled elsewhere). */
-(function(){
-  var txt=$('#t-text'),card=txt.closest('.card'),det=$('#t-prio').closest('details'),sum=det&&det.querySelector('summary');
-  function seq(){var a=[txt,$('#t-subj'),$('#t-due')];if(sum)a.push(sum);if(!det||det.open)a.push($('#t-prio'));a.push($('#t-add'));return a}
-  function go(from,dir){
-    if(dir>0&&from===sum&&det&&!det.open)det.open=true;
-    var a=seq(),to=a[a.indexOf(from)+dir];if(!to)return false;
-    to.focus();if(to===txt)txt.setSelectionRange(txt.value.length,txt.value.length);return true;
+/* Tasks bar: one "Search or add a task" box.
+   Typing filters the list. Add (button, Enter when nothing matches, or the "+ Add" row) creates a task.
+   Down/Up move through the "+ Add" row and the matching tasks; the highlighted task's title is shown in the box with the cursor at its end.
+   Right arrow (cursor at the end) goes on: for a new task along Subject, Date, Time, Length, Priority, Add; for a highlighted task along
+   Today, Tomorrow, Time, Length, Priority, Set (applies to that task only). Left goes back, Esc clears the box. */
+function tkDurParse(v){
+  v=String(v||'').trim().toLowerCase();if(!v)return 0;
+  var m=/^(\d+(?:\.\d+)?)\s*h(?:ours?|rs?)?\s*(?:(\d+)\s*m?(?:in(?:ute)?s?)?)?$/.exec(v),n;
+  if(m)n=Math.round(parseFloat(m[1])*60+(m[2]?+m[2]:0));
+  else{m=/^(\d+)\s*(?:m|min|mins|minutes?)?$/.exec(v);if(!m)return null;n=+m[1]}
+  return n>=1&&n<=1440?n:null;
+}
+function tkDurFmt(m){var h=Math.floor(m/60),r=m%60;return h?(r?h+'h'+r+'m':h+'h'):r+'m'}
+function tkPlanOf(k){return S.plans.find(function(p){return p.taskId===k.id})}
+function tkSearchQ(x){x=(x||'').trim();if(!x)return'';try{var pr=tkParse(x,{dateLocked:!!$('#t-due').value});if(pr&&!pr.needTitle&&(pr.date||pr.time)&&pr.title)return pr.title}catch(e){}return x}
+function tkAddLabel(x){x=(x||'').trim();try{var pr=tkParse(x,{dateLocked:!!$('#t-due').value});if(pr&&!pr.needTitle&&pr.title)return pr.title}catch(e){}return x}
+function tkBarSync(){
+  var b=$('#tk-bar');if(!b)return;
+  var any=!!((($('#t-text').value)||'').trim()||$('#t-due').value||$('#t-time').value||(($('#t-dur').value)||'').trim()||$('#t-prio').value);
+  b.classList.toggle('has',any);b.classList.toggle('onTask',!!tkHi&&tkHi!=='__add');
+  var ab=$('#t-add');if(ab)ab.textContent=(tkHi&&tkHi!=='__add')?'Update':'Add';
+}
+function tkCtl(k){
+  var lp=tkPlanOf(k),pr=k.priority||'';
+  return'<div class="tqc" data-for="'+k.id+'"><button class="ghost" data-act="qday" data-d="0" data-ctl="today">Today</button><button class="ghost" data-act="qday" data-d="1" data-ctl="tomorrow">Tomorrow</button><input type="time" data-ctl="time" value="'+esc(k.dueTime||'')+'" aria-label="Time"><input type="text" data-ctl="dur" value="'+(lp?esc(tkDurFmt(lp.min)):'')+'" placeholder="Length" autocomplete="off" aria-label="Length, for example 1h or 45m"><select data-ctl="prio" aria-label="Priority">'+[['','Priority'],['low','Low'],['medium','Medium'],['high','High']].map(function(o){return'<option value="'+o[0]+'"'+(pr===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select><button data-act="qset" data-ctl="set">Set</button></div>';
+}
+function tkSugMatches(){
+  var q=(tkTyped||'').trim();if(!q)return[];
+  var f={view:'all',subj:'',topic:'',priority:'',q:tkF.q,sort:'due'},t0=today(),sq=(tkF.q||'').toLowerCase();
+  return S.tasks.filter(function(k){return tkMatch(S,k,f,t0)}).sort(function(a,b){
+    var x=a.status==='completed'?1:0,y=b.status==='completed'?1:0;if(x!==y)return x-y;
+    x=a.title.toLowerCase().indexOf(sq)===0?0:1;y=b.title.toLowerCase().indexOf(sq)===0?0:1;if(x!==y)return x-y;
+    x=a.dueDate||'9999';y=b.dueDate||'9999';return x<y?-1:x>y?1:0;
+  }).slice(0,5);
+}
+function tkSugRender(){
+  var el=$('#tk-sug');if(!el)return;
+  if(!(tkTyped||'').trim()){el.hidden=true;el.innerHTML='';return}
+  var t0=today(),h=tkSugMatches().map(function(k){
+    var m=[k.subjectId?sname(k.subjectId):'General'];
+    if(k.dueDate)m.push(tkDueLabel(k.dueDate,t0)+(k.dueTime?', '+tkTm(k.dueTime):''));
+    if(k.status==='completed')m.push('done');
+    return'<div class="tksg'+(tkHi===k.id?' hi':'')+(k.status==='completed'?' dn':'')+'" data-sid="'+k.id+'" role="option"><b>'+esc(k.title)+'</b><small>'+esc(m.join(' \u00b7 '))+'</small></div>';
+  }).join('');
+  h+='<div class="tksg add'+(tkHi==='__add'?' hi':'')+'" data-sid="__add" role="option"><b>+ Add \u201c'+esc(tkAddLabel(tkTyped))+'\u201d</b></div>';
+  el.innerHTML=h;el.hidden=false;
+}
+function tkNav(){
+  if((tkTyped||'').trim())return tkSugMatches().map(function(k){return k.id}).concat('__add');
+  var a=[];document.querySelectorAll('#tk-list .tq[data-id]:not(.tqx)').forEach(function(r){a.push(r.dataset.id)});return a;
+}
+function tkEndCaret(){var t=$('#t-text');t.focus();var n=t.value.length;try{t.setSelectionRange(n,n)}catch(e){}}
+function tkSetHi(id){
+  var tx=$('#t-text');tkHi=id;
+  if(id&&id!=='__add'){var k=S.tasks.find(function(x){return x.id===id});tx.value=k?k.title:(tkTyped||'');$('#t-parse').hidden=true;
+    if(k&&(k.status==='completed'||!tkMatch(S,k,tkF,today()))){tkF.view=k.status==='completed'?'done':'all';tkF.subj='';tkF.topic='';tkF.priority=''}}
+  else{tx.value=tkTyped||'';tkPreview()}
+  tkBarSync();renderTasks();
+  if(!(tkTyped||'').trim()){var el=document.querySelector('#tk-list .hi');if(el&&el.scrollIntoView)el.scrollIntoView({block:'nearest'})}
+  try{var n=tx.value.length;tx.setSelectionRange(n,n)}catch(e){}
+}
+function tkFocusCtl(id,ctl){
+  var el=document.querySelector('#tk-list .tq[data-id="'+id+'"] [data-ctl="'+ctl+'"]');if(!el)return false;
+  el.focus();if(el.type==='text'){var n=el.value.length;try{el.setSelectionRange(n,n)}catch(e){}}
+  return true;
+}
+function tkApplyDay(id,d){
+  var k=S.tasks.find(function(x){return x.id===id&&!x.deleted});if(!k)return;
+  var dt=new Date();dt.setDate(dt.getDate()+d);
+  var q={dueDate:ymd(dt)};if(!d&&k.dueTime&&k.dueTime<tkNowHM())q.dueTime='';
+  var r=tkUpdate(S,k,q,Date.now());if(!r.ok){toast(r.error);return}
+  save();render();tkFocusCtl(id,d?'tomorrow':'today');toast(d?'Due tomorrow.':'Due today.');
+}
+function tkApplySet(id){
+  var k=S.tasks.find(function(x){return x.id===id&&!x.deleted});if(!k)return;
+  var ic=tkInlineCtx($('#t-text').value);if(ic&&ic.k.id===id){tkApplyInline(ic);return}
+  var sv=$('#t-subj').value,dd=$('#t-due').value,tv=$('#t-time').value||'',dv=tkDurParse($('#t-dur').value),pv=$('#t-prio').value;
+  if(dv===null){toast('Length like 1h, 45m or 90 (minutes).');return}
+  if(!sv&&!dd&&!tv&&!dv&&!pv){toast('Fill in a date, time, length, priority or subject to update this task.');return}
+  var nd=dd||k.dueDate||'';
+  if(tv&&!nd){toast('Pick a date to add a time.');return}
+  if(dv&&!(tv||k.dueTime)){toast('Set a time first to add a length.');return}
+  var q={};
+  if(sv)q.subjectId=sv;if(dd)q.dueDate=dd;if(tv)q.dueTime=tv;if(pv)q.priority=pv;
+  var r=tkUpdate(S,k,q,Date.now());if(!r.ok){toast(r.error);return}
+  if(dv&&k.dueDate&&k.dueTime){
+    var sm=+k.dueTime.slice(0,2)*60+ +k.dueTime.slice(3),mn=Math.max(1,Math.min(dv,1440-sm)),lp=tkPlanOf(k);
+    if(lp){lp.min=mn}
+    else S.plans.push({id:uid(),date:k.dueDate,startMin:sm,min:mn,subj:k.subjectId||null,note:k.title,taskId:k.id});
   }
-  card.addEventListener('keydown',function(e){
-    if(e.isComposing||e.shiftKey||e.ctrlKey||e.altKey||e.metaKey)return;
-    var t=e.target,id=t.id,isSum=t===sum;
-    if(e.key==='Enter'){if(id==='t-subj'||id==='t-prio'||isSum){e.preventDefault();tkQuickAdd()}return}
+  ['#t-due','#t-time','#t-dur','#t-prio','#t-subj'].forEach(function(q2){$(q2).value=''});
+  $('#t-text').value='';tkTyped='';tkHi=null;tkF.q='';tkPreview();tkBarSync();
+  save();render();tkEndCaret();toast('Task updated.');
+}
+/* Inline update: pick a task from the suggestions, then type @ right after its title.
+   "Revise physics@tomorrow 5pm 1h high"  |  "@5pm"  |  "@1h"  |  "@no time"  |  "@clear length"  |  "@no priority" */
+function tkInlineCtx(v){
+  if(!tkHi||tkHi==='__add'||typeof v!=='string')return null;
+  var k=S.tasks.find(function(x){return x.id===tkHi&&!x.deleted});
+  if(!k||v.indexOf(k.title+'@')!==0)return null;
+  return{k:k,rest:v.slice(k.title.length+1)};
+}
+function tkInlineSpec(rest){
+  var s=' '+String(rest||'').replace(/\s+/g,' ')+' ',clr={},sp={date:null,time:null,dur:null,prio:null},err='',CM={date:'date',time:'time',length:'len',duration:'len',len:'len',priority:'prio',prio:'prio'};
+  s=s.replace(/\s(?:no|clear|remove)\s+(date|time|length|duration|len|priority|prio)(?=\s)/gi,function(w,t){clr[CM[t.toLowerCase()]]=true;return''});
+  s=s.replace(/\s(?:priority\s+)?(high|medium|med|low)(?:\s+priority)?(?=\s)/i,function(w,t){t=t.toLowerCase();sp.prio=t==='med'?'medium':t;return' '});
+  var t=s.trim();
+  if(t){
+    var pr=tkParse('x '+t,{upd:true}),left=String(pr.title||'').replace(/^x\s*/,'').trim();
+    if(left)err='Could not read \u201c'+left+'\u201d. Try a date, time, length (1h, 45m) or priority.';
+    sp.date=pr.date||null;sp.time=pr.time||null;sp.dur=pr.dur||null;
+  }
+  if(!err&&((clr.date&&(sp.date||sp.time||sp.dur))||(clr.time&&sp.time)||(clr.len&&sp.dur)||(clr.prio&&sp.prio)))err='Those instructions conflict. Use either a new value or \u201cno \u2026\u201d, not both.';
+  return{sp:sp,clr:clr,err:err};
+}
+function tkInlinePreview(ic){
+  var el=$('#t-parse');if(!el)return;
+  if(!String(ic.rest).trim()){el.textContent='Update \u201c'+ic.k.title+'\u201d: type a date, time, length or priority after @, e.g. @tomorrow 5pm 1h';el.hidden=false;return}
+  var r=tkInlineSpec(ic.rest),sp=r.sp,c=r.clr,parts=[];
+  if(r.err){el.textContent=r.err;el.hidden=false;return}
+  if(c.date)parts.push('No date (time and length removed)');
+  else if(sp.date)parts.push(tkDueLabel(sp.date,today())+' ('+new Date(sp.date+'T00:00:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'})+')');
+  if(c.time&&!c.date)parts.push('No time (length removed)');
+  else if(sp.time)parts.push(tkTm(sp.time));
+  if(c.len&&!c.date&&!c.time)parts.push('No length');
+  else if(sp.dur)parts.push(fmt(sp.dur));
+  if(c.prio)parts.push('No priority');else if(sp.prio)parts.push('Priority '+sp.prio);
+  el.textContent=parts.length?'Update: '+parts.join(' \u00b7 ')+'  \u2192  \u201c'+ic.k.title+'\u201d':'Nothing to change yet.';
+  el.hidden=false;
+}
+function tkApplyInline(ic){
+  var k=ic.k,r=tkInlineSpec(ic.rest),sp=r.sp,c=r.clr;
+  if(r.err){toast(r.err);return}
+  var sv=$('#t-subj').value,dd=sp.date||$('#t-due').value,tv=sp.time||$('#t-time').value||'',pv=sp.prio||$('#t-prio').value,dv=sp.dur||tkDurParse($('#t-dur').value);
+  if(dv===null){toast('Length like 1h, 45m or 90 (minutes).');return}
+  if(c.date){dd='';tv='';dv=0}else if(c.time){tv='';dv=0}
+  if(c.len)dv=0;
+  if(!sv&&!dd&&!tv&&!pv&&!dv&&!(c.date||c.time||c.len||c.prio)){toast('Type a date, time, length or priority after @.');return}
+  var effDate=c.date?'':(dd||k.dueDate||''),effTime=(c.date||c.time)?'':(tv||k.dueTime||'');
+  if(tv&&!effDate){var t2=new Date();if(tv<=tkNowHM())t2.setDate(t2.getDate()+1);dd=ymd(t2);effDate=dd}
+  if(dv&&!effTime){toast('Add a time (or give the task one) to set a length.');return}
+  var q={};
+  if(sv)q.subjectId=sv;
+  if(c.date){q.dueDate='';q.dueTime='';q.repeat=''}
+  else{if(dd)q.dueDate=dd;if(c.time)q.dueTime='';else if(tv)q.dueTime=tv}
+  if(c.prio)q.priority='';else if(pv)q.priority=pv;
+  var res=tkUpdate(S,k,q,Date.now());if(!res.ok){toast(res.error);return}
+  var lp=tkPlanOf(k);
+  if(c.len||c.time||c.date){if(lp)S.plans=S.plans.filter(function(x){return x.taskId!==k.id})}
+  else if(dv&&k.dueDate&&k.dueTime){
+    var sm=+k.dueTime.slice(0,2)*60+ +k.dueTime.slice(3),mn=Math.max(1,Math.min(dv,1440-sm));
+    if(lp){lp.min=mn}
+    else S.plans.push({id:uid(),date:k.dueDate,startMin:sm,min:mn,subj:k.subjectId||null,note:k.title,taskId:k.id});
+  }
+  ['#t-due','#t-time','#t-dur','#t-prio','#t-subj'].forEach(function(q2){$(q2).value=''});
+  $('#t-text').value='';tkTyped='';tkHi=null;tkF.q='';tkPreview();tkBarSync();
+  save();render();tkEndCaret();toast('Task updated.');
+}
+(function(){
+  var txt=$('#t-text'),bar=$('#tk-bar'),lst=$('#tk-list');
+  txt.addEventListener('input',function(){var ic=tkInlineCtx(txt.value);if(ic){var sg=$('#tk-sug');if(sg){sg.hidden=true}tkInlinePreview(ic);tkBarSync();return}tkTyped=txt.value;tkHi=null;tkF.q=tkSearchQ(tkTyped);tkBarSync();renderTasks()});
+  ['#t-subj','#t-due','#t-time','#t-dur','#t-prio'].forEach(function(q){var el=$(q);el.addEventListener('input',tkBarSync);el.addEventListener('change',tkBarSync)});
+  $('#tk-sug').addEventListener('pointerdown',function(e){
+    var r=e.target.closest?e.target.closest('[data-sid]'):null;if(!r)return;
+    e.preventDefault();var id=r.dataset.sid;
+    if(id==='__add'){tkHi='__add';tkQuickAdd()}else{tkSetHi(id);tkEndCaret()}
+  });
+  txt.addEventListener('keydown',function(e){
+    if(e.isComposing||e.ctrlKey||e.altKey||e.metaKey)return;
+    var key=e.key;
+    if(key==='ArrowDown'||key==='ArrowUp'){
+      if(e.shiftKey)return;
+      var a=tkNav();if(!a.length)return;
+      e.preventDefault();
+      var i=a.indexOf(tkHi);
+      if(key==='ArrowDown')i=i<0?0:Math.min(a.length-1,i+1);else i=i<=0?-1:i-1;
+      tkSetHi(i<0?null:a[i]);return;
+    }
+    if(key==='Enter'){
+      if(e.shiftKey)return;
+      e.preventDefault();
+      if(tkHi&&tkHi!=='__add'){tkApplySet(tkHi);return}
+      if(tkHi==='__add'){tkQuickAdd();return}
+      if(!(tkTyped||'').trim())return;
+      if(!tkSugMatches().length)tkQuickAdd();
+      return;
+    }
+    if(key==='Escape'){
+      if(txt.value||tkHi){e.preventDefault();txt.value='';tkTyped='';tkHi=null;tkF.q='';tkPreview();tkBarSync();renderTasks()}
+      return;
+    }
+    if(key==='ArrowRight'&&!e.shiftKey){
+      if(txt.selectionStart!==txt.value.length||txt.selectionEnd!==txt.value.length)return;
+      e.preventDefault();$('#t-subj').focus();
+    }
+  });
+  bar.addEventListener('keydown',function(e){
+    var t=e.target;if(t===txt||e.isComposing||e.shiftKey||e.ctrlKey||e.altKey||e.metaKey)return;
+    var id=t.id,seq=[txt,$('#t-subj'),$('#t-due'),$('#t-time'),$('#t-dur'),$('#t-prio'),$('#t-add')];
+    if(e.key==='Enter'){if(id==='t-subj'||id==='t-prio'||id==='t-time'||id==='t-dur'){e.preventDefault();tkQuickAdd()}return}
     if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;
-    var dir=e.key==='ArrowRight'?1:-1;
-    if(t===txt){if(dir>0&&txt.selectionStart===txt.value.length&&txt.selectionEnd===txt.value.length&&go(t,1))e.preventDefault();return}
-    if(id==='t-subj'||id==='t-prio'||isSum||id==='t-add'){if(go(t,dir))e.preventDefault()}
+    var d=e.key==='ArrowRight'?1:-1;
+    if(id==='t-due'||id==='t-time')return;
+    if(id==='t-dur'){var n=t.value.length;if(d>0&&!(t.selectionStart===n&&t.selectionEnd===n))return;if(d<0&&!(t.selectionStart===0&&t.selectionEnd===0))return}
+    else if(id!=='t-subj'&&id!=='t-prio'&&id!=='t-add')return;
+    var to=seq[seq.indexOf(t)+d];if(!to)return;
+    e.preventDefault();
+    if(to===txt)tkEndCaret();else to.focus();
+  });
+  lst.addEventListener('keydown',function(e){
+    var t=e.target,c=t.dataset&&t.dataset.ctl;if(!c||e.isComposing||e.shiftKey||e.ctrlKey||e.altKey||e.metaKey)return;
+    var order=['today','tomorrow','time','dur','prio','set'],i=order.indexOf(c),box=t.closest('.tqc'),id=box&&box.dataset.for;
+    if(!id)return;
+    if(e.key==='Escape'){e.preventDefault();tkEndCaret();return}
+    if(e.key==='Enter'){if(c==='today'||c==='tomorrow'||c==='set')return;e.preventDefault();tkApplySet(id);return}
+    if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;
+    var d=e.key==='ArrowRight'?1:-1;
+    if(c==='time')return;
+    if(c==='dur'){var n=t.value.length;if(d>0&&!(t.selectionStart===n&&t.selectionEnd===n))return;if(d<0&&!(t.selectionStart===0&&t.selectionEnd===0))return}
+    if(i+d<0){e.preventDefault();tkEndCaret();return}
+    var to=order[i+d];if(!to)return;
+    e.preventDefault();tkFocusCtl(id,to);
   });
 })();
 /* Keyboard flow for the Log study time form (Home) and the Add study time popup (Calendar, Log time and Plan session).
@@ -2976,7 +3463,7 @@ document.addEventListener('keydown',function(e){
   function undoShow(id){
     if(!undoBar){undoBar=document.createElement('div');undoBar.className='toast tt-undo';undoBar.hidden=true;undoBar.setAttribute('role','status');document.body.appendChild(undoBar)}
     undoBar.innerHTML='<span>Task deleted</span><button type="button">Undo</button>';
-    undoBar.lastChild.onclick=function(){var k=S.tasks.find(function(x){return x.id===id});if(k&&k.deleted){k.deleted=false;delete k.deletedAt;k.updatedAt=Date.now();save();render()}undoHide()};
+    undoBar.lastChild.onclick=function(){var k=S.tasks.find(function(x){return x.id===id});if(k&&k.deleted){k.deleted=false;delete k.deletedAt;k.updatedAt=Date.now();tkRestorePlan(k);save();render()}undoHide()};
     undoBar.hidden=false;clearTimeout(undoTimer);undoTimer=setTimeout(undoHide,5000);
   }
   function doneAnim(box,viaKey){
@@ -3228,7 +3715,7 @@ function show(v){
   ['log','cal','tasks','exams','graph','subj'].forEach(function(n){$('#v-'+n).hidden=(n!==v)});
   if(v==='tasks'){renderTasks();renderSyl()}
   document.querySelectorAll('nav button').forEach(function(b){b.setAttribute('aria-current',b.dataset.v===v?'true':'false')});
-  var T={tasks:'Tasks',exams:'Exam deadlines',graph:'Analytics',subj:'Settings'};$('h1').hidden=!T[v];if(T[v])$('h1').textContent=T[v];$('main').style.padding=v==='cal'?'6px 12px 0':'';document.body.style.paddingBottom=v==='cal'?'0':'';window.scrollTo(0,0);if(v==='cal'){fitTl();scrollTl()}if(v==='log')fitHome();
+  var T={tasks:'Tasks',exams:'Exam deadlines',graph:'Analytics',subj:'Settings'};$('h1').hidden=!T[v];if(T[v])$('h1').textContent=T[v];$('main').style.padding=v==='cal'?'6px 12px 0':'';document.body.style.paddingBottom=v==='cal'?'0':'';window.scrollTo(0,0);if(v==='cal'){fitTl();scrollTl()}if(v==='log'){fitHome();dawnReplay()}
 }
 document.querySelectorAll('nav button').forEach(function(b){b.onclick=function(){show(b.dataset.v);if(b.dataset.v==='tasks')sylRestoreScroll()}});
 
