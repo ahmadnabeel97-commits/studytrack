@@ -869,10 +869,11 @@ nav button[aria-current=true]{background:var(--c3)!important;color:var(--accent)
 .syr-nav button:disabled{opacity:.35}
 .syr-nav .xdots{margin:0}.syr-nav .xdots i{cursor:pointer}
 @media(max-width:899px){
-  body #v-log>.timer{grid-template-areas:"pill go" "clock go" "opt opt" "tbr tbr"!important}
-  body #v-log>.timer .topt{grid-area:opt;margin:6px 0 0;gap:5px}
-  body #v-log>.timer .topt button{min-height:26px;font-size:10.5px;padding:0 9px}
-  body #v-log>.timer .topt input{min-height:26px;width:54px;font-size:11px}
+  body #v-log>.timer{grid-template-areas:"pill go" "clock go" "opt go" "tbr tbr"!important}
+  body #v-log>.timer .topt{grid-area:opt;margin:4px 0 0;gap:4px;min-width:0}
+  body #v-log>.timer .tseg,body #v-log>.timer .tlen{gap:4px;flex-wrap:nowrap}
+  body #v-log>.timer .topt button{min-height:26px;font-size:10.5px;padding:0 8px}
+  body #v-log>.timer .topt input{min-height:26px;width:44px;font-size:11px;padding:0 4px}
 }
 /* Timer: mobile button row fix + liquid glass Log button */
 @media(max-width:899px){
