@@ -652,18 +652,19 @@ nav button[aria-current=true]{background:var(--c3)!important;color:var(--accent)
    Puts back the dusk-scene Home dashboard from earlier stages:
    original palette, hero, tiles, cards, timer-first layout,
    mosque quote card, and the sidebar scene.
-   Scoped to the Home tab on desktop (>=900px); the other tabs
-   keep the lavender style. Delete this whole block to undo.
+   Layout rules are scoped to the Home tab on desktop (>=900px); the
+   indigo colour palette and page background now apply to every desktop
+   section. Delete this whole block to undo.
    ========================================================= */
 @media(min-width:900px){
-  html:has(#v-log:not([hidden])){--bg:#eef0fb;--surface:#fff;--ink:#1f1b4d;--mute:#6a6e9a;--line:#e2e5f6;--accent:#4f3fd6;--on-accent:#fff;--good:#2f9e6b;--bad:#d64545;--bar:#6b5ce7;--c1:#dbe9fd;--c2:#d6f3e4;--c3:#e5e0fb;--c4:#fde6c6;--shadow:0 6px 18px rgba(79,63,214,.10);color-scheme:light}
-  html[data-theme="dark"]:has(#v-log:not([hidden])){--bg:#13112c;--surface:#1d1a40;--ink:#edecff;--mute:#a4a8d3;--line:#2f2c5e;--accent:#8e80ff;--on-accent:#13112c;--good:#5fd1a0;--bad:#ff8080;--bar:#8e80ff;--c1:#1f2c58;--c2:#173a30;--c3:#2b2660;--c4:#4a3420;--shadow:0 6px 18px rgba(0,0,0,.35);color-scheme:dark}
+  :root{--bg:#eef0fb;--surface:#fff;--ink:#1f1b4d;--mute:#6a6e9a;--line:#e2e5f6;--accent:#4f3fd6;--on-accent:#fff;--good:#2f9e6b;--bad:#d64545;--bar:#6b5ce7;--c1:#dbe9fd;--c2:#d6f3e4;--c3:#e5e0fb;--c4:#fde6c6;--shadow:0 6px 18px rgba(79,63,214,.10);color-scheme:light}
+  :root[data-theme="dark"]{--bg:#13112c;--surface:#1d1a40;--ink:#edecff;--mute:#a4a8d3;--line:#2f2c5e;--accent:#8e80ff;--on-accent:#13112c;--good:#5fd1a0;--bad:#ff8080;--bar:#8e80ff;--c1:#1f2c58;--c2:#173a30;--c3:#2b2660;--c4:#4a3420;--shadow:0 6px 18px rgba(0,0,0,.35);color-scheme:dark}
 }
 @media(min-width:900px) and (prefers-color-scheme:dark){
-  html:not([data-theme="light"]):has(#v-log:not([hidden])){--bg:#13112c;--surface:#1d1a40;--ink:#edecff;--mute:#a4a8d3;--line:#2f2c5e;--accent:#8e80ff;--on-accent:#13112c;--good:#5fd1a0;--bad:#ff8080;--bar:#8e80ff;--c1:#1f2c58;--c2:#173a30;--c3:#2b2660;--c4:#4a3420;--shadow:0 6px 18px rgba(0,0,0,.35);color-scheme:dark}
+  :root:not([data-theme="light"]){--bg:#13112c;--surface:#1d1a40;--ink:#edecff;--mute:#a4a8d3;--line:#2f2c5e;--accent:#8e80ff;--on-accent:#13112c;--good:#5fd1a0;--bad:#ff8080;--bar:#8e80ff;--c1:#1f2c58;--c2:#173a30;--c3:#2b2660;--c4:#4a3420;--shadow:0 6px 18px rgba(0,0,0,.35);color-scheme:dark}
 }
 @media(min-width:900px){
-  html:has(#v-log:not([hidden])) body{background:var(--bg)}
+  html body{background:var(--bg)}
   html:has(#v-log:not([hidden])) main{max-width:1000px!important;padding:24px 32px!important}
 
   /* cards */
@@ -1047,6 +1048,17 @@ nav button[aria-current=true]{background:var(--c3)!important;color:var(--accent)
   #c-panel{flex-basis:290px}
   #v-cal #c-split{flex:1 1 auto;min-height:420px}
 }
+
+/* Desktop Tasks view: add bar on the left, tasks on the right */
+@media(min-width:1100px){
+  #v-tasks #tk-tasks:not([hidden]){display:grid;grid-template-columns:minmax(300px,360px) minmax(0,1fr);column-gap:20px;align-items:start}
+  #v-tasks #tk-tasks>#tk-bar{grid-column:1;position:sticky;top:12px;margin:0;z-index:2}
+  #v-tasks #tk-tasks>#tk-right{grid-column:2;min-width:0}
+  #v-tasks #tk-pin{position:sticky;top:0;z-index:5;background:var(--bg);padding:2px 0 4px;max-height:calc(100vh - 16px);overflow-y:auto}
+  #v-tasks .tkbar .tkctl{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  #v-tasks .tkbar .tkctl>*{width:100%;min-width:0;flex:none}
+  #v-tasks .tkbar .tkctl #t-subj{grid-column:1/-1}
+}
 </style>
 <script>
 window.FB_CONFIG={
@@ -1181,15 +1193,17 @@ window.FB_CONFIG={
       <div id="t-topic" class="tparse" hidden></div>
       <div class="tkctl" id="tk-ctl"><select id="t-subj" aria-label="Subject"></select><input id="t-due" type="date" aria-label="Due date"><input id="t-time" type="time" aria-label="Due time (optional)"><input id="t-dur" type="text" placeholder="Length" autocomplete="off" aria-label="Length, for example 1h or 45m"><select id="t-prio" aria-label="Priority"><option value="">Priority</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></div>
     </div>
+    <div id="tk-right"><div id="tk-pin">
     <div class="fchips" id="tk-chips"></div>
     <div class="card tkflt">
       <div class="tkfrow"><select id="tk-fs" aria-label="Filter by subject"></select><select id="tk-sort" aria-label="Sort tasks"><option value="due">Due date</option><option value="prio">Priority</option><option value="new">Newest</option></select><button class="ghost" id="tk-select-mode">Select</button></div>
       <details class="tkmore"><summary>More filters</summary><select id="tk-ft" aria-label="Filter by topic" hidden></select><div class="tk-priority"><span>Priority</span><div id="tk-priority-chips" class="fchips"><button class="fchip on" data-priority="">All</button><button class="fchip" data-priority="high">High</button><button class="fchip" data-priority="medium">Medium</button><button class="fchip" data-priority="low">Low</button><button class="fchip" data-priority="none">None</button></div></div><select id="tk-fp" aria-label="Filter by priority" style="display:none"><option value="">All priorities</option><option value="high">High priority</option><option value="medium">Medium priority</option><option value="low">Low priority</option><option value="none">No priority</option></select></details>
-    </div>
+    </div></div>
     <div class="tk-bulk" id="tk-bulk" hidden><b id="tk-selected-count">0 selected</b><button id="tk-bulk-done">Complete</button><button class="ghost" id="tk-bulk-todo">Mark to do</button><button class="ghost" id="tk-bulk-delete">Delete</button><button class="ghost" id="tk-bulk-clear">Clear</button></div>
     <div class="row tk-bulk" id="tk-bulk-set" style="margin-top:8px" hidden><select id="tk-bulk-subj" aria-label="Set subject for selected tasks"></select><select id="tk-bulk-prio" aria-label="Set priority for selected tasks"><option value="">Priority…</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="none">No priority</option></select><input type="date" id="tk-bulk-due" aria-label="Set due date for selected tasks"><button id="tk-bulk-apply">Apply</button></div>
     <div class="card" id="tk-list"></div>
     <div class="tk-sum" id="tk-overview" aria-label="Task overview"></div>
+    </div>
   </div>
   <div id="tk-syl"><div id="syl"></div></div>
 </section>
