@@ -1195,6 +1195,11 @@ nav button[aria-current=true]{background:var(--c3)!important;color:var(--accent)
 .rv-main>h2{margin-top:0!important}
 .rv-main>.empty{margin:0 0 12px}
 }
+.ex-cov{display:flex;flex-wrap:wrap;gap:6px}
+.ex-cov label,.ex-covp label{display:inline-flex;align-items:center;gap:6px;margin:0;padding:5px 10px;border:1px solid var(--line);border-radius:999px;font-size:13px;font-weight:500;letter-spacing:0;color:var(--ink);background:var(--bg);cursor:pointer}
+.ex-covp{flex:1 1 100%;margin-top:8px}
+.ex-covp .ex-cov{margin-top:6px}
+.ex-covb{min-height:32px;padding:4px 10px;font-size:12px}
 </style>
 <script>
 window.FB_CONFIG={
@@ -1357,6 +1362,8 @@ window.FB_CONFIG={
       <div><label for="e-date">Date</label><input id="e-date" type="date"></div>
       <div><label for="e-subj">Subject (optional)</label><select id="e-subj"></select></div>
     </div>
+    <label>Covers these subjects (optional, for Mastery revision timing)</label>
+    <div id="e-cov" class="ex-cov"></div>
     <button class="full" id="e-add">Add exam</button>
   </div>
   <h2>Upcoming</h2><div class="card" id="e-list"></div>
@@ -1556,6 +1563,7 @@ function fillSelects(optional){
     if(id==='l-subj'&&!active.length)el.innerHTML='<option value="">Add or restore a subject first</option>';
     if(cur)el.value=cur;
   });
+  var cv=$('#e-cov');if(cv){var keep={};cv.querySelectorAll('input:checked').forEach(function(i){keep[i.value]=1});var act=S.subjects.filter(function(s){return!s.archivedAt&&!s.deleted});cv.innerHTML=act.length?act.map(function(s){return'<label><input type="checkbox" value="'+s.id+'"'+(keep[s.id]?' checked':'')+'>'+esc(s.name)+'</label>'}).join(''):'<small style="color:var(--mute)">Add subjects first.</small>'}
 }
 
 function render(){
@@ -1579,7 +1587,7 @@ function render(){
   renderTasks();
 
   var exs=S.exams.slice().sort(function(a,b){return a.date<b.date?-1:1});
-  $('#e-list').innerHTML=exs.length?exs.map(function(e){var d=until(e.date),txt=d<0?'passed':d===0?'today':d+(d===1?' day':' days');return'<div class="item"><div class="t"><b>'+esc(e.name)+'</b><small>'+niceDate(e.date)+(e.subj?' – '+esc(sname(e.subj)):'')+'</small></div><div class="days'+(d>=0&&d<=14?' soon':'')+'">'+txt+'</div><button class="x" data-del-exam="'+e.id+'" aria-label="Delete exam">×</button></div>'}).join(''):'<div class="empty">No exam dates yet.</div>';
+  $('#e-list').innerHTML=exs.length?exs.map(function(e){var d=until(e.date),txt=d<0?'passed':d===0?'today':d+(d===1?' day':' days'),sc=examScope(e),names=sc.map(function(id){return sname(id)}).filter(Boolean);var item='<div class="item"><div class="t"><b>'+esc(e.name)+'</b><small>'+niceDate(e.date)+(names.length?' – '+esc(names.join(', ')):'')+'</small></div><div class="days'+(d>=0&&d<=14?' soon':'')+'">'+txt+'</div><button class="ghost ex-covb" data-ex-cov="'+e.id+'" aria-expanded="'+(exCovOpen===e.id?'true':'false')+'">Subjects</button><button class="x" data-del-exam="'+e.id+'" aria-label="Delete exam">×</button></div>';if(exCovOpen===e.id){var cs=Array.isArray(e.subjs)?e.subjs:[];item+='<div class="ex-covp"><small style="color:var(--mute)">This exam shortens revision for these subjects:</small><div class="ex-cov">'+S.subjects.filter(function(x){return!x.archivedAt&&!x.deleted}).map(function(x){return'<label><input type="checkbox" data-ex-chk="'+e.id+'" value="'+x.id+'"'+(cs.indexOf(x.id)>=0||e.subj===x.id?' checked':'')+(e.subj===x.id?' disabled':'')+'>'+esc(x.name)+'</label>'}).join('')+'</div></div>'}return item}).join(''):'<div class="empty">No exam dates yet.</div>';
 
   var tot={};S.logs.forEach(function(l){tot[l.subj]=(tot[l.subj]||0)+l.min});
   var activeSubjects=S.subjects.filter(function(s){return!s.archivedAt&&!s.deleted});$('#s-list').innerHTML=activeSubjects.length?activeSubjects.map(function(s){return'<div class="item"><div class="t"><b>'+esc(s.name)+'</b><small>'+S.tasks.filter(function(k){return k.subjectId===s.id&&!k.deleted&&k.status!=='completed'}).length+' open tasks</small></div><span class="v">'+fmt(tot[s.id]||0)+'</span><button class="x" data-del-subj="'+s.id+'" aria-label="Archive subject">×</button></div>'}).join(''):'<div class="empty">Add a subject to start logging time.</div>';
@@ -3456,7 +3464,7 @@ function renderGantt(){
   var exams=(S.exams||[]).filter(function(e){return e&&!e.deleted&&typeof e.date==='string'&&GT_RE.test(e.date)&&gtDn(e.date)>=td-60&&gtDn(e.date)<=td+400});
   exams.forEach(function(e){hi=Math.max(hi,gtDn(e.date)+10)});
   n0=lo-(((lo+4)%7+6)%7);n1=hi;var nn=n1-n0+1,W=nn*DW,gridW=gtZoom==='day'?DW:gtZoom==='week'?7*DW:W;
-  var anyClosed=rows.some(function(r){return r.k==='s'&&(!gtOpen[r.sb.id]||r.list.some(function(x){return x.n>0&&!gtOpenU[x.u.id]}))});
+  var anyClosed=rows.some(function(r){return r.k==='s'&&!gtOpen[r.sb.id]});
   var h='<div class="gt-top"><div class="seg" role="group" aria-label="Exam track">'+SYL_TRACKS.map(function(x){return'<button type="button" class="ghost" data-gt-track="'+x.id+'" aria-pressed="'+(gtTrack===x.id?'true':'false')+'">'+x.name+'</button>'}).join('')+'</div><div class="seg" role="group" aria-label="Zoom">'+GT_ZOOMS.map(function(z){return'<button type="button" class="ghost" data-gt-zoom="'+z.id+'" aria-pressed="'+(gtZoom===z.id?'true':'false')+'">'+z.n+'</button>'}).join('')+'</div><span class="gt-sp"></span>'+(rows.late&&rows.late.n?'<button type="button" class="ghost gt-latechip" data-gt-late="1" title="Open what is behind schedule">\u26a0 '+rows.late.n+' behind</button>':'')+(mob||!rows.length?'':'<button type="button" class="ghost" data-gt-plan="1" aria-pressed="'+(gtPlan?'true':'false')+'">Auto-plan</button>')+'<button type="button" class="ghost" data-gt-today="1">Today</button>'+(rows.length?'<button type="button" class="ghost" data-gt-all="'+(anyClosed?'1':'0')+'">'+(anyClosed?'Expand all':'Collapse all')+'</button>':'')+'</div>';
   if(gtEdit){
     var ek=gtSplit(gtEdit),er=gtRec(ek.k,ek.id),eb=er?gtBar(ek.k,ek.id):null;
@@ -3522,7 +3530,7 @@ $('#gt').addEventListener('click',function(e){
   if((b=t.closest('[data-gt-zoom]'))){gtZoom=b.dataset.gtZoom;gtUiSave();renderGantt();return}
   if((b=t.closest('[data-gt-sub]'))){var sid=b.dataset.gtSub;if(gtOpen[sid])delete gtOpen[sid];else gtOpen[sid]=true;gtUiSave();renderGantt();return}
   if((b=t.closest('[data-gt-usub]'))){var uid2=b.dataset.gtUsub;if(gtOpenU[uid2])delete gtOpenU[uid2];else gtOpenU[uid2]=true;gtUiSave();renderGantt();return}
-  if(t.closest('[data-gt-all]')){var ex=t.closest('[data-gt-all]').dataset.gtAll==='1';gtOpen={};gtOpenU={};if(ex)gtModel().forEach(function(r){if(r.k==='s'){gtOpen[r.sb.id]=true;r.list.forEach(function(x){if(x.n>0)gtOpenU[x.u.id]=true})}});gtUiSave();renderGantt();return}
+  if(t.closest('[data-gt-all]')){var ex=t.closest('[data-gt-all]').dataset.gtAll==='1';if(ex){gtModel().forEach(function(r){if(r.k==='s')gtOpen[r.sb.id]=true})}else{gtOpen={};gtOpenU={}}gtUiSave();renderGantt();return}
   if(t.closest('[data-gt-today]')){var sc=$('#gt-scroll');if(sc){var tdl=sc.querySelector('.gt-today');if(tdl)sc.scrollTo({left:Math.max(0,parseFloat(tdl.style.left)-120),behavior:'smooth'})}return}
   if((b=t.closest('[data-gt-add]'))){if(gtMobile())return;gtEdit=b.dataset.gtAdd;renderGantt();var s0=$('#gt-s');if(s0)s0.focus();return}
   if((b=t.closest('[data-gt-edit]'))){if(gtMobile()||Date.now()<gtBlock)return;gtEdit=b.dataset.gtEdit;renderGantt();var s1=$('#gt-s');if(s1)s1.focus();return}
@@ -4772,10 +4780,12 @@ function renderCal(){
    Each enrolled topic carries an optional `rev` object: {step,next,last,n,hist}. Nothing else is changed. ===== */
 var REV_STEPS=[1,3,7,14,30,60,120],REV_CAP=4,revCustom=null,revAddOpen=false,revQ='',revFirst='';
 function revAdd(n){var d=new Date();d.setDate(d.getDate()+n);return ymd(d)}
+var exCovOpen=null;
+function examScope(e){var o=[];if(e&&e.subj)o.push(e.subj);if(e&&Array.isArray(e.subjs))e.subjs.forEach(function(id){if(id&&o.indexOf(id)<0)o.push(id)});return o}
 function revExam(sb){
   var ex=(S.exams||[]).filter(function(e){return e&&!e.deleted&&typeof e.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(e.date)&&until(e.date)>=0}).sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0});
-  var own=sb?ex.filter(function(e){return e.subj===sb.id})[0]:null;
-  return own||ex[0]||null;
+  var own=sb?ex.filter(function(e){return examScope(e).indexOf(sb.id)>=0})[0]:null;
+  return own||ex.filter(function(e){return!examScope(e).length})[0]||null;
 }
 function revIv(step,sb){
   var d=REV_STEPS[step],e=revExam(sb);if(!e)return d;
@@ -5003,7 +5013,9 @@ $('#l-add').onclick=function(){
   msg.style.color='var(--good)';msg.textContent=L.start?'Saved '+fmt(min)+', started '+tf(L.start)+'.':'Saved '+fmt(min)+'.';render();$('#logform').hidden=true;$('#h-log').textContent='+ Log Time';toast(msg.textContent);msg.textContent='';fitHome();
 };
 $('#t-add').onclick=tkQuickAdd;
-$('#e-add').onclick=function(){var n=$('#e-name').value.trim(),d=$('#e-date').value;if(!n||!d)return;S.exams.push({id:uid(),name:n,date:d,subj:$('#e-subj').value});$('#e-name').value='';$('#e-date').value='';save();render()};
+$('#e-add').onclick=function(){var n=$('#e-name').value.trim(),d=$('#e-date').value;if(!n||!d)return;var ex={id:uid(),name:n,date:d,subj:$('#e-subj').value},cv=[];$('#e-cov').querySelectorAll('input:checked').forEach(function(i){cv.push(i.value)});if(cv.length){ex.subjs=cv;ex.updatedAt=Date.now()}S.exams.push(ex);$('#e-name').value='';$('#e-date').value='';$('#e-cov').querySelectorAll('input').forEach(function(i){i.checked=false});save();render()};
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-ex-cov]');if(!b)return;exCovOpen=exCovOpen===b.dataset.exCov?null:b.dataset.exCov;render()});
+document.addEventListener('change',function(e){var t=e.target;if(!t.dataset||!t.dataset.exChk)return;var ex=S.exams.find(function(x){return x.id===t.dataset.exChk});if(!ex)return;var set=Array.isArray(ex.subjs)?ex.subjs.slice():[],i=set.indexOf(t.value);if(t.checked&&i<0)set.push(t.value);if(!t.checked&&i>=0)set.splice(i,1);ex.subjs=set;ex.updatedAt=Date.now();save();render()});
 $('#s-add').onclick=function(){var n=$('#s-name').value.trim();if(!n)return;S.subjects.push({id:uid(),name:n});$('#s-name').value='';save();render()};
 
 document.addEventListener('click',function(e){
