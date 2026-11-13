@@ -906,6 +906,7 @@ nav button[aria-current=true]{background:var(--c3)!important;color:var(--accent)
 .tl .blk.plan .ph[data-ph=t]::after{top:3px}.tl .blk.plan .ph[data-ph=b]::after{bottom:3px}
 .tl .blk.plan.sel:not(.wb){cursor:grab;touch-action:none;box-shadow:0 0 0 2px var(--accent);z-index:4}
 .tl .blk.plan.sel:not(.wb) .ph{display:block}
+@media(min-width:700px){.tl .blk.plan.wb.sel{cursor:grab;touch-action:none;box-shadow:0 0 0 2px var(--accent);z-index:4}.tl .blk.plan.wb.sel .ph{display:block;height:8px}.tl .blk.plan.wb.sel .ph::after{width:20px;margin-left:-10px;height:3px}.tl .blk.plan.wb.sel .ph[data-ph=t]::after{top:2px}.tl .blk.plan.wb.sel .ph[data-ph=b]::after{bottom:2px}}
 /* Tasks: live preview of the date/time understood from the task text */
 .tparse{margin:6px 2px 0;font-size:12px;font-weight:700;color:var(--accent);overflow-wrap:anywhere}
 /* Syllabus manager: compact task rows. Swipe right = done / back to to-do, swipe left = delete (with Undo). */
@@ -1133,6 +1134,7 @@ nav button[aria-current=true]{background:var(--c3)!important;color:var(--accent)
 #c-drop{position:absolute;left:56px;right:3px;z-index:5;pointer-events:none;border:2px dashed var(--accent);background:color-mix(in srgb,var(--accent) 22%,transparent);border-radius:8px;font-size:11px;font-weight:500;padding:2px 8px;overflow:hidden;white-space:nowrap;color:var(--ink)}
 @media(min-width:900px){
   #c-panel{flex-basis:290px}
+  #c-split.wk #c-panel{flex-basis:230px}
   #v-cal #c-split{flex:1 1 auto;min-height:420px}
 }
 
@@ -1811,7 +1813,7 @@ function renderWeekTl(ws){
     B.forEach(function(b){var q=0;while(q<lanes.length&&lanes[q]>b.s)q++;lanes[q]=b.e;b.lane=q});
     var n=Math.max(lanes.length,1);
     B.forEach(function(b){var c=sidx(b.l.subj);
-      g+='<div class="blk wb'+(b.plan?' plan'+(planPast(b.l)?' past':''):'')+'" data-blk="'+b.l.id+'" style="top:'+(b.s*PPM)+'px;height:'+Math.max((b.e-b.s)*PPM-2,18)+'px;left:calc(56px + (100% - 56px) * '+((j+b.lane/n)/7)+' + 1px);width:calc((100% - 56px) / 7 / '+n+' - 2px);'+(b.plan?'--pc:'+COL[c]:'background:'+COL[c]+';color:'+TXT[c])+'">'+esc(sname(b.l.subj))+'</div>'});
+      g+='<div class="blk wb'+(b.plan?' plan'+(planPast(b.l)?' past':''):'')+'" data-blk="'+b.l.id+'" style="top:'+(b.s*PPM)+'px;height:'+Math.max((b.e-b.s)*PPM-2,18)+'px;left:calc(56px + (100% - 56px) * '+((j+b.lane/n)/7)+' + 1px);width:calc((100% - 56px) / 7 / '+n+' - 2px);'+(b.plan?'--pc:'+COL[c]:'background:'+COL[c]+';color:'+TXT[c])+'">'+esc(sname(b.l.subj))+(b.plan?'<i class="ph" data-ph="t"></i><i class="ph" data-ph="b"></i>':'')+'</div>'});
     if(k===t){var nm=nw.getHours()*60+nw.getMinutes();g+='<div class="now" style="top:'+(nm*PPM)+'px;left:calc(56px + (100% - 56px) * '+(j/7)+');right:auto;width:calc((100% - 56px) / 7)"></div>'}
   }
   var tl=$('#c-tl');tl.style.height=(1440*PPM)+'px';tl.innerHTML=g;$('#z-lab').textContent=slotMin+' min';drawDraft();updInfo();fitTl();
@@ -1987,15 +1989,21 @@ function plApply(){
   else{s=Math.max(0,Math.min(pdrag.s0+dm,1440-len));e=s+len}
   p.startMin=s;p.min=e-s;
   var el=pdrag.el,sm=el.querySelector('small');
+  if(pdrag.wk&&pdrag.mode==='m'){
+    var cw=(tr.width-56)/7,di=Math.round(((pdrag.x-tr.left)-pdrag.x0)/cw),dd=new Date(pdrag.d0+'T00:00:00'),c0=dd.getDay(),nc=Math.max(0,Math.min(6,c0+di));
+    dd.setDate(dd.getDate()+(nc-c0));p.date=ymd(dd);cSel=p.date;
+    el.style.left='calc(56px + (100% - 56px) * '+(nc/7)+' + 1px)';el.style.width='calc((100% - 56px) / 7 - 2px)';
+  }
   el.style.top=(s*PPM)+'px';el.style.height=Math.max((e-s)*PPM-2,22)+'px';
   if(sm)sm.textContent=(planPast(p)?'Missed - ':'Planned - ')+fmt(p.min)+(p.note?' - '+p.note:'');
   updInfo();
 }
 $('#c-tl').addEventListener('pointerdown',function(e){
-  var el=e.target.closest('.blk.plan.sel');if(!el||el.classList.contains('wb')||cMode==='week')return;
+  var el=e.target.closest('.blk.plan.sel');if(!el)return;
+  var wk=cMode==='week';if(wk?(window.innerWidth<700||!el.classList.contains('wb')):el.classList.contains('wb'))return;
   var p=planById(el.dataset.blk);if(!p)return;
   var hd=e.target.closest('[data-ph]'),tr=this.getBoundingClientRect();
-  pdrag={id:p.id,el:el,mode:hd?hd.dataset.ph:'m',y:e.clientY,sy:e.clientY,y0:e.clientY-tr.top,s0:p.startMin,e0:p.startMin+p.min,m0:p.min,moved:false};
+  pdrag={id:p.id,el:el,mode:hd?hd.dataset.ph:'m',y:e.clientY,sy:e.clientY,y0:e.clientY-tr.top,s0:p.startMin,e0:p.startMin+p.min,m0:p.min,moved:false,wk:wk,x:e.clientX,sx:e.clientX,x0:e.clientX-tr.left,d0:p.date};
   try{el.setPointerCapture(e.pointerId)}catch(x){}
   clearInterval(pdTimer);
   pdTimer=setInterval(function(){
@@ -2006,16 +2014,21 @@ $('#c-tl').addEventListener('pointerdown',function(e){
   },30);
   e.preventDefault();
 });
-document.addEventListener('pointermove',function(e){if(!pdrag)return;pdrag.y=e.clientY;if(Math.abs(e.clientY-pdrag.sy)>4)pdrag.moved=true;if(pdrag.moved)plApply()});
+document.addEventListener('pointermove',function(e){if(!pdrag)return;pdrag.y=e.clientY;pdrag.x=e.clientX;if(Math.abs(e.clientY-pdrag.sy)>4||(pdrag.wk&&Math.abs(e.clientX-pdrag.sx)>4))pdrag.moved=true;if(pdrag.moved)plApply()});
 document.addEventListener('pointerup',function(){
   clearInterval(pdTimer);if(!pdrag)return;
   var d=pdrag,p=planById(d.id);pdrag=null;
-  if(d.moved&&p&&(p.startMin!==d.s0||p.min!==d.m0)){lkPush(p);save();render()}
+  if(d.moved)pinchAt=Date.now();
+  if(d.moved&&p&&(p.startMin!==d.s0||p.min!==d.m0||p.date!==d.d0)){
+    lkPush(p);if(d.wk)cSel=p.date;save();render();
+    if(d.wk)toast('Moved to '+new Date(p.date+'T00:00:00').toLocaleDateString(undefined,{weekday:'short'})+', '+tl12(p.startMin));
+  }
 });
 document.addEventListener('pointercancel',function(){
   clearInterval(pdTimer);if(!pdrag)return;
   var d=pdrag,p=planById(d.id);pdrag=null;
-  if(p){p.startMin=d.s0;p.min=d.m0;render()}
+  if(d.wk)cSel=d.d0;
+  if(p){p.startMin=d.s0;p.min=d.m0;p.date=d.d0;render()}
 });
 /* Calendar tasks panel (Day view): slide it open beside the timeline, then drag a task onto a time slot to plan it.
    Only the open/closed flag is stored (locally, never synced). A drop uses the same linked task + plan as typed tasks. */
@@ -2024,19 +2037,22 @@ try{cpOpen=localStorage.getItem(CP_KEY)==='1'}catch(e){}
 function cpMin(k){var lp=tkPlanOf(k);return lp&&lp.min>0?lp.min:15}
 function renderCalPanel(){
   var sp=$('#c-split'),pn=$('#c-panel'),pin=$('#c-pin'),tb=$('#c-ptab');if(!sp||!pn||!pin||!tb)return;
-  sp.classList.toggle('nop',cMode!=='day');
+  var pOk=cMode==='day'||(cMode==='week'&&window.innerWidth>=700);
+  sp.classList.toggle('nop',!pOk);sp.classList.toggle('wk',cMode==='week');
   pn.hidden=!cpOpen;tb.textContent=cpOpen?'\u203A':'Tasks';tb.classList.toggle('open',cpOpen);
   tb.setAttribute('aria-expanded',String(cpOpen));tb.setAttribute('aria-label',cpOpen?'Hide tasks panel':'Show tasks panel');
-  if(!cpOpen||cMode!=='day'||(cpHold&&cpHold.active))return;
-  var list=S.tasks.filter(function(k){return k.dueDate===cSel&&!k.deleted&&k.status!=='completed'}).map(function(k){return{k:k,lp:tkPlanOf(k)}});
-  list.sort(function(a,b){return(!!a.lp-!!b.lp)||((a.k.priority==='high'?0:1)-(b.k.priority==='high'?0:1))||String(a.k.dueTime||'').localeCompare(String(b.k.dueTime||''))});
-  var ttl=cSel===today()?'Today\u2019s tasks':new Date(cSel+'T00:00:00').toLocaleDateString(undefined,{day:'numeric',month:'short'})+' tasks';
+  if(!cpOpen||!pOk||(cpHold&&cpHold.active))return;
+  var wk=cMode==='week',lo=cSel,hi=cSel;
+  if(wk){var w0=new Date(cSel+'T00:00:00');w0.setDate(w0.getDate()-w0.getDay());lo=ymd(w0);w0.setDate(w0.getDate()+6);hi=ymd(w0)}
+  var list=S.tasks.filter(function(k){return k.dueDate>=lo&&k.dueDate<=hi&&!k.deleted&&k.status!=='completed'}).map(function(k){return{k:k,lp:tkPlanOf(k)}});
+  list.sort(function(a,b){return(!!a.lp-!!b.lp)||(wk?String(a.k.dueDate).localeCompare(String(b.k.dueDate)):0)||((a.k.priority==='high'?0:1)-(b.k.priority==='high'?0:1))||String(a.k.dueTime||'').localeCompare(String(b.k.dueTime||''))});
+  var ttl=wk?'This week\u2019s tasks':cSel===today()?'Today\u2019s tasks':new Date(cSel+'T00:00:00').toLocaleDateString(undefined,{day:'numeric',month:'short'})+' tasks';
   var touch=window.matchMedia&&matchMedia('(pointer:coarse)').matches,free=0,h='<div class="pc-h"><b>'+esc(ttl)+'</b><small>'+list.length+' left</small></div>';
   if(!list.length)h+='<div class="pc-hint">No tasks due on this day.</div>';
   list.forEach(function(x){
-    var k=x.k,sn=sname(k.subjectId);
-    if(x.lp)h+='<div class="pcard planned"><b>'+esc(k.title)+'</b><small>'+esc(sn)+' \u00B7 '+tl12(x.lp.startMin)+' \u00B7 '+fmt(x.lp.min)+'</small></div>';
-    else{free++;h+='<div class="pcard" data-pt="'+k.id+'"><b>'+esc(k.title)+'</b><small>'+esc(sn)+' \u00B7 '+fmt(cpMin(k))+'</small></div>'}
+    var k=x.k,sn=sname(k.subjectId),dl=wk?new Date(k.dueDate+'T00:00:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric'})+' \u00B7 ':'';
+    if(x.lp)h+='<div class="pcard planned"><b>'+esc(k.title)+'</b><small>'+dl+esc(sn)+' \u00B7 '+tl12(x.lp.startMin)+' \u00B7 '+fmt(x.lp.min)+'</small></div>';
+    else{free++;h+='<div class="pcard" data-pt="'+k.id+'"><b>'+esc(k.title)+'</b><small>'+dl+esc(sn)+' \u00B7 '+fmt(cpMin(k))+'</small></div>'}
   });
   h+='<div class="pc-hint"><button type="button" class="ghost" data-cal-add="1" style="width:100%;min-height:36px">+ Add task</button></div>';
   pin.innerHTML=h;
@@ -2046,6 +2062,12 @@ function cpTarget(h){
   var sc=$('#c-scroll'),r=sc.getBoundingClientRect();
   if(h.cx<r.left||h.cx>r.right||h.cy<r.top||h.cy>r.bottom)return null;
   var tr=$('#c-tl').getBoundingClientRect(),PPM=SLOT_PX/slotMin,m=Math.floor((h.cy-tr.top)/PPM/15)*15;
+  h.date=cSel;h.ci=-1;
+  if(cMode==='week'){
+    var cw=(tr.width-56)/7,x=h.cx-tr.left-56;
+    if(x<0||x>=cw*7)return null;
+    var ci=Math.floor(x/cw),wd=new Date(cSel+'T00:00:00');wd.setDate(wd.getDate()-wd.getDay()+ci);h.ci=ci;h.date=ymd(wd);
+  }
   return Math.max(0,Math.min(m,1440-Math.min(h.dur,1440)));
 }
 function cpPreview(s,h){
@@ -2054,6 +2076,8 @@ function cpPreview(s,h){
   if(!el){el=document.createElement('div');el.id='c-drop';tl.appendChild(el)}
   var PPM=SLOT_PX/slotMin;
   el.style.top=(s*PPM)+'px';el.style.height=Math.max(h.dur*PPM,20)+'px';
+  if(h.ci>=0){el.style.left='calc(56px + (100% - 56px) * '+(h.ci/7)+' + 1px)';el.style.right='auto';el.style.width='calc((100% - 56px) / 7 - 2px)';el.style.padding='2px 4px'}
+  else{el.style.left='';el.style.right='';el.style.width='';el.style.padding=''}
   el.textContent='Drop here \u00B7 '+tl12(s)+' \u2013 '+tl12(s+h.dur);
 }
 function cpMove(){
@@ -2083,18 +2107,19 @@ function cpEnd(drop){
   var s=h.active&&drop?cpTarget(h):null;
   if(h.ghost)h.ghost.remove();
   h.el.classList.remove('pdim');cpPreview(null,h);
-  if(s!==null)cpDrop(h.id,s);
+  if(s!==null)cpDrop(h.id,s,h.date);
 }
-function cpDrop(id,sm){
+function cpDrop(id,sm,dt){
+  dt=dt||cSel;
   var k=S.tasks.find(function(x){return x.id===id&&!x.deleted});if(!k||k.status==='completed')return;
   var mn=Math.max(1,Math.min(cpMin(k),1440-sm));
-  var r=tkUpdate(S,k,{dueDate:cSel,dueTime:pad(Math.floor(sm/60))+':'+pad(sm%60)},Date.now());
+  var r=tkUpdate(S,k,{dueDate:dt,dueTime:pad(Math.floor(sm/60))+':'+pad(sm%60)},Date.now());
   if(!r.ok){toast(r.error);return}
   var lp=tkPlanOf(k);
-  if(lp){lp.date=cSel;lp.startMin=sm;lp.min=mn}
-  else{lp={id:uid(),date:cSel,startMin:sm,min:mn,subj:k.subjectId||null,note:k.title,taskId:k.id};S.plans.push(lp)}
-  infoId=lp.id;infoConfirm=false;draft=null;
-  save();render();toast('Planned for '+tl12(sm));
+  if(lp){lp.date=dt;lp.startMin=sm;lp.min=mn}
+  else{lp={id:uid(),date:dt,startMin:sm,min:mn,subj:k.subjectId||null,note:k.title,taskId:k.id};S.plans.push(lp)}
+  cSel=dt;infoId=lp.id;infoConfirm=false;draft=null;
+  save();render();toast('Planned for '+(cMode==='week'?new Date(dt+'T00:00:00').toLocaleDateString(undefined,{weekday:'short'})+', ':'')+tl12(sm));
 }
 $('#c-pin').addEventListener('contextmenu',function(e){if(e.target.closest('[data-pt]'))e.preventDefault()});
 $('#c-pin').addEventListener('pointerdown',function(e){
