@@ -2853,7 +2853,6 @@ function dmSubjProg(st,sid){
   return ts.reduce(function(a,t){return a+dmTopicProg(st,t)},0)/ts.length;
 }
 function dmTopicDone(t,on,now){t.manuallyCompleted=!!on;t.studyStatus=on?(t.studyStatus||'b'):null;t.updatedAt=now}
-function dmTopicStatus(t,v,now){if(t.studyStatus===v){t.studyStatus=null;t.manuallyCompleted=false}else{t.studyStatus=v;t.manuallyCompleted=(v!=='a')}t.updatedAt=now}
 function dmTopicIndex(st){
   var un={},sb={},out=[];
   st.units.forEach(function(u){un[u.id]=u});st.subjects.forEach(function(x){sb[x.id]=x});
@@ -2977,7 +2976,6 @@ function loadSyl(){
   sylOpen=dmSeed(SYL).subjects[0].id;
   save();render();
 }
-function sbtn(k,v){return'<div class="sb">'+[['a','Started'],['b','Studied'],['c','Need revision'],['d','Revised']].map(function(x){return'<button class="q'+x[0]+(v===x[0]?' on':'')+'" data-kk="'+k+'" data-st="'+x[0]+'">'+x[1]+'</button>'}).join('')+'</div>'}
 var sylTrack='all',sylMenu=null,sylPage=0,sylTouched=false,sylJump=false,SYX_PER=6,SYX_OFF=[0,40,-40,80,-80,120,-120,160,-160];
 function sylHsl(c){
   var m=/^hsl\(\s*([\d.]+)\s*,\s*([\d.]+)%\s*,\s*([\d.]+)%\s*\)$/.exec(c);
@@ -4774,6 +4772,22 @@ function renderCal(){
    Each enrolled topic carries an optional `rev` object: {step,next,last,n,hist}. Nothing else is changed. ===== */
 var REV_STEPS=[1,3,7,14,30,60,120],REV_CAP=4,revCustom=null,revAddOpen=false,revQ='',revFirst='';
 function revAdd(n){var d=new Date();d.setDate(d.getDate()+n);return ymd(d)}
+function revExam(sb){
+  var ex=(S.exams||[]).filter(function(e){return e&&!e.deleted&&typeof e.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(e.date)&&until(e.date)>=0}).sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0});
+  var own=sb?ex.filter(function(e){return e.subj===sb.id})[0]:null;
+  return own||ex[0]||null;
+}
+function revIv(step,sb){
+  var d=REV_STEPS[step],e=revExam(sb);if(!e)return d;
+  var dl=until(e.date),f=Math.min(1,dl/60);
+  return Math.max(1,Math.min(Math.round(d*f),Math.max(1,dl-1)));
+}
+function revExamNote(all){
+  var best=null;
+  all.forEach(function(x){var e=revExam(x.sb);if(e){var dl=until(e.date);if(dl<60&&(!best||dl<best.dl))best={dl:dl,name:e.name}}});
+  if(!best)return'';
+  return'<div class="rv-hint" style="margin:0 2px 10px">'+(best.dl===0?'Exam today':'Exam in '+best.dl+' day'+(best.dl>1?'s':''))+(best.name?' ('+esc(best.name)+')':'')+' \u00b7 revision intervals are shortened</div>';
+}
 function revFind(id){return S.topics.find(function(x){return x.id===id})}
 function revTopics(){
   var out=[];
@@ -4793,12 +4807,12 @@ function revOrder(a,b){
 function revEnroll(t,next){t.rev={step:0,next:next,last:null,n:0,hist:[]};t.updatedAt=Date.now()}
 function revRate(id,code){
   var t=revFind(id);if(!t||!t.rev)return;var prev=JSON.stringify(t.rev);
-  var rv=t.rev,st=rv.step||0,top=REV_STEPS.length-1,td=today();
+  var rv=t.rev,st=rv.step||0,top=REV_STEPS.length-1,td=today(),rec=tkTopicRec(t.id),sbx=rec?rec.sb:null;
   if(code==='f')st=0;else if(code==='g')st=Math.min(st+1,top);else if(code==='e')st=Math.min(st+2,top);
-  rv.step=st;rv.next=revAdd(REV_STEPS[st]);rv.last=td;rv.n=(rv.n||0)+1;
+  var iv=revIv(st,sbx);rv.step=st;rv.next=revAdd(iv);rv.last=td;rv.n=(rv.n||0)+1;
   rv.hist=(rv.hist||[]).concat([[td,code]]).slice(-10);
   revCustom=null;t.updatedAt=Date.now();save();renderRev();
-  rvUndoShow('Rated '+{f:'Forgot',h:'Hard',g:'Good',e:'Easy'}[code]+' \u00b7 next in '+REV_STEPS[st]+'d',function(){t.rev=JSON.parse(prev);t.updatedAt=Date.now();save();renderRev()});
+  rvUndoShow('Rated '+{f:'Forgot',h:'Hard',g:'Good',e:'Easy'}[code]+' \u00b7 next in '+iv+'d',function(){t.rev=JSON.parse(prev);t.updatedAt=Date.now();save();renderRev()});
 }
 function revSetCustom(id){
   var t=revFind(id);if(!t||!t.rev)return;
@@ -4843,7 +4857,7 @@ function revPush(id,n){
 }
 function revRow(x){
   var t=x.t,rv=t.rev,st=rv.step||0,top=REV_STEPS.length-1,late=-until(rv.next);
-  var g={f:REV_STEPS[0],h:REV_STEPS[st],g:REV_STEPS[Math.min(st+1,top)],e:REV_STEPS[Math.min(st+2,top)]};
+  var g={f:revIv(0,x.sb),h:revIv(st,x.sb),g:revIv(Math.min(st+1,top),x.sb),e:revIv(Math.min(st+2,top),x.sb)};
   var btn=[['f','Forgot','#d64545'],['h','Hard','#e08a2e'],['g','Good','#2f9e6b'],['e','Easy','#4f7fe0']].map(function(b){
     return'<button type="button" data-rv-rate="'+t.id+'" data-code="'+b[0]+'" style="background:'+b[2]+'">'+b[1]+'<small>'+g[b[0]]+'d</small></button>'}).join('');
   var h='<div class="rv-sw" data-id="'+t.id+'" data-kind="t"><div class="rv-act rv-actL">'+btn+'</div>'
@@ -4868,23 +4882,6 @@ function revUpcoming(all,td){
   if(up.length>cut)h+='<button type="button" class="ghost" data-rv-upall="1" style="width:100%;margin-top:6px">Show '+(up.length-cut)+' more</button>';
   return h+'</div>';
 }
-function revCard(x){
-  var t=x.t,rv=t.rev,st=rv.step||0,top=REV_STEPS.length-1,late=-until(rv.next);
-  var g={f:REV_STEPS[0],h:REV_STEPS[st],g:REV_STEPS[Math.min(st+1,top)],e:REV_STEPS[Math.min(st+2,top)]};
-  var state=late>0?late+' day'+(late>1?'s':'')+' overdue':'Due today';
-  var h='<div class="card rv-card"><div class="rv-t">'+esc(t.title)+'</div><small>'+esc(x.sb.name)+' \u203a '+esc(x.u.title)+'</small>'
-    +'<small>'+state+' \u00b7 Step '+(st+1)+' of '+REV_STEPS.length+' \u00b7 '+(rv.last?'last revised '+niceDate(rv.last):'not revised yet')+'</small>'
-    +'<div class="rv-r4">'+[['f','Forgot','var(--bad)'],['h','Hard','#f2a04b'],['g','Good','var(--good)'],['e','Easy','#4f93e8']].map(function(b){
-      return'<button type="button" data-rv-rate="'+t.id+'" data-code="'+b[0]+'" style="--rc:'+b[2]+'">'+b[1]+'<small>'+g[b[0]]+'d</small></button>';
-    }).join('')+'</div>';
-  if(revCustom===t.id){
-    h+='<div class="rv-c"><input id="rv-cd" type="number" min="1" max="3650" inputmode="numeric" placeholder="days" aria-label="Days until next revision"><span style="color:var(--mute);font-size:12px">or</span><input id="rv-cdate" type="date" min="'+revAdd(1)+'" aria-label="Next revision date"><button type="button" data-rv-cset="'+t.id+'">Set</button><button type="button" class="ghost" data-rv-ccancel="1">Cancel</button></div>'
-      +'<div style="margin-top:6px"><button type="button" class="rv-link" data-rv-remove="'+t.id+'">Remove from Mastery</button></div>';
-  }else{
-    h+='<div class="rv-cu" style="margin-top:8px"><button type="button" class="ghost" data-rv-custom="'+t.id+'" style="min-height:34px;font-size:12.5px">Custom\u2026</button></div>';
-  }
-  return h+'</div>';
-}
 function revResults(){
   var q=(revQ||'').trim().toLowerCase();
   if(q.length<2)return'<div class="empty" style="padding:8px 0">Type at least 2 letters of a topic or unit name.</div>';
@@ -4907,6 +4904,7 @@ function renderRev(){
   var cand=S.topics.filter(function(t){return!t.deleted&&!t.rev&&t.studyStatus&&anPrelim(t)&&tkTopicRec(t.id)}).length;
   var h='<div class="rv-wrap"><div class="rv-stats"><div><b>'+due.length+'</b><span>Due now</span></div><div><b>'+done+'/'+REV_CAP+'</b><span>Done today</span></div><div><b>'+all.length+'</b><span>In Mastery</span></div></div>';
   if(cand>0)h+='<div class="card"><div class="ch"><b>Start revising what you\u2019ve studied</b></div><p style="margin:6px 0 10px;color:var(--mute);font-size:13px">'+cand+' topic'+(cand>1?'s':'')+' you\u2019ve already started or studied can join Mastery. They\u2019ll be due tomorrow, and up to '+REV_CAP+' a day will show up, \u201cNeed revision\u201d topics first.</p><button type="button" class="full" data-rv-start="1">Start revising '+cand+' studied topic'+(cand>1?'s':'')+'</button></div>';
+  h+=revExamNote(all);
   h+='<div class="rv-main"><h2 style="margin-top:6px">Today\u2019s revision</h2>';
   if(shown.length)h+='<div class="rv-hint">Swipe right to rate &middot; left for custom &middot; or tap a row</div><div class="rv-q">'+shown.map(revRow).join('')+'</div>';
   else if(!all.length)h+='<div class="card empty">Nothing here yet. Add a topic below'+(cand>0?', or start with the topics you\u2019ve already studied.':', or mark topics as Studied in the Syllabus and come back.')+'</div>';
