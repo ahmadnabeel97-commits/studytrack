@@ -2727,7 +2727,7 @@ function syncFail(e){
   var c=e&&e.code||'';
   if(c==='permission-denied')showSync('Sync was blocked by your database rules. Your data is safe on this device.');
   else if(c==='unauthenticated')showSync('Please sign in again to keep syncing. Your data is safe on this device.');
-  else showSync('Could not sync just now. Will retry shortly. Your data is safe on this device.');
+  else showSync('Could not sync just now'+(c?' ('+c+')':e&&e.message?' ('+String(e.message).slice(0,60)+')':'')+'. Will retry shortly. Your data is safe on this device.');
 }
 window.addEventListener('online',function(){if(sync.on){showSync('Back online. Syncing\u2026');schedPush()}});
 window.addEventListener('offline',function(){if(sync.on)syncFail()});
