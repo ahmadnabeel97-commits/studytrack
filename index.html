@@ -2727,7 +2727,7 @@ function syncFail(e){
   var c=e&&e.code||'';
   if(c==='permission-denied')showSync('Sync was blocked by your database rules. Your data is safe on this device.');
   else if(c==='unauthenticated')showSync('Please sign in again to keep syncing. Your data is safe on this device.');
-  else showSync('Could not sync just now'+(c?' ('+c+')':e&&e.message?' ('+String(e.message).slice(0,60)+')':'')+'. Will retry shortly. Your data is safe on this device.');
+  else showSync('Could not sync just now'+(c?' ('+c+(e._doc?', '+e._doc:'')+')':e&&e.message?' ('+String(e.message).slice(0,60)+')':'')+'. Will retry shortly. Your data is safe on this device.');
 }
 window.addEventListener('online',function(){if(sync.on){showSync('Back online. Syncing\u2026');schedPush()}});
 window.addEventListener('offline',function(){if(sync.on)syncFail()});
@@ -2736,8 +2736,14 @@ function canon(v){if(Array.isArray(v))return'['+v.map(canon).join(',')+']';if(v&
 function noU(r){var o={};Object.keys(r).forEach(function(k){if(k!=='u')o[k]=r[k]});return o}
 function persist(){try{localStorage.setItem(skey(),JSON.stringify(S));return true}catch(e){return false}}
 function schedPush(){if(!sync.on)return;clearTimeout(pushT);pushT=setTimeout(pushNow,1500)}
+function wireTopic(t){
+  if(!t||!t.rev||!Array.isArray(t.rev.hist)||!t.rev.hist.some(Array.isArray))return t;
+  var c=Object.assign({},t);c.rev=Object.assign({},t.rev);
+  c.rev.hist=t.rev.hist.map(function(h){return Array.isArray(h)?h.join('|'):h});
+  return c;
+}
 function buildDocs(){
-  var o={meta:{v:3,subjects:S.subjects,tasks:S.tasks,exams:S.exams,units:S.units||[],topics:S.topics||[],gantt:S.gantt||[],goal:S.goal||10}},m={};
+  var o={meta:{v:3,subjects:S.subjects,tasks:S.tasks,exams:S.exams,units:S.units||[],topics:(S.topics||[]).map(wireTopic),gantt:S.gantt||[],goal:S.goal||10}},m={};
   S.logs.forEach(function(l){var k=l.date.slice(0,7);(m[k]=m[k]||[]).push(l)});
   Object.keys(S.u||{}).forEach(function(k){if(k.indexOf('logs-')===0&&!m[k.slice(5)])m[k.slice(5)]=[]});
   Object.keys(m).forEach(function(k){o['logs-'+k]={items:m[k]}});
@@ -2750,18 +2756,19 @@ async function pushNow(){
   if(!sync.on)return;
   if(sync.busy){sync.again=true;return}
   sync.busy=true;
+  var cur='';
   try{
     S.u=S.u||{};
     var docs=buildDocs(),ids=Object.keys(docs);
     for(var i=0;i<ids.length;i++){
-      var id=ids[i],c=canon(docs[id]);
+      var id=ids[i],c=canon(docs[id]);cur=id;
       if(sync.pushed[id]===c)continue;
       var u=Date.now(),body=cp(docs[id]);body.u=u;
       await sync.col.doc(id).set(body);
       S.u[id]=u;sync.pushed[id]=c;
     }
     persist();showSync('Synced with your account at '+tf(Date.now())+'.');
-  }catch(e){syncFail(e);if(navigator.onLine!==false){clearTimeout(pushT);pushT=setTimeout(pushNow,30000)}}
+  }catch(e){if(e&&typeof e==='object'&&cur)e._doc=cur;syncFail(e);if(navigator.onLine!==false){clearTimeout(pushT);pushT=setTimeout(pushNow,30000)}}
   sync.busy=false;
   if(sync.again){sync.again=false;schedPush()}
 }
@@ -5372,7 +5379,7 @@ function revRate(id,code){
   var rv=t.rev,st=rv.step||0,top=REV_STEPS.length-1,td=today(),rec=tkTopicRec(t.id),sbx=rec?rec.sb:null;
   if(code==='f')st=0;else if(code==='g')st=Math.min(st+1,top);else if(code==='e')st=Math.min(st+2,top);
   var iv=revIv(st,sbx);rv.step=st;rv.next=revAdd(iv);rv.last=td;rv.n=(rv.n||0)+1;
-  rv.hist=(rv.hist||[]).concat([[td,code]]).slice(-10);
+  rv.hist=(rv.hist||[]).concat([td+'|'+code]).slice(-10);
   revCustom=null;t.updatedAt=Date.now();save();renderRev();
   rvUndoShow('Rated '+{f:'Forgot',h:'Hard',g:'Good',e:'Easy'}[code]+' \u00b7 next in '+iv+'d',function(){t.rev=JSON.parse(prev);t.updatedAt=Date.now();save();renderRev()});
 }
@@ -5381,7 +5388,7 @@ function revSetCustom(id){
   var dEl=$('#rv-cd'),dtEl=$('#rv-cdate'),days=parseInt(dEl&&dEl.value,10),next=null,td=today();
   if(days>0&&days<=3650)next=revAdd(days);else if(dtEl&&dtEl.value&&dtEl.value>td)next=dtEl.value;
   if(!next){toast('Enter a number of days (1 or more) or pick a future date.');return}
-  var rv=t.rev;rv.next=next;rv.last=td;rv.n=(rv.n||0)+1;rv.hist=(rv.hist||[]).concat([[td,'c']]).slice(-10);
+  var rv=t.rev;rv.next=next;rv.last=td;rv.n=(rv.n||0)+1;rv.hist=(rv.hist||[]).concat([td+'|c']).slice(-10);
   revCustom=null;t.updatedAt=Date.now();save();renderRev();
 }
 function revFromTask(k){
